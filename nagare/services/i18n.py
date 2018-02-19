@@ -14,6 +14,7 @@ from nagare.services import plugin
 
 
 class I18NService(plugin.Plugin):
+    LOAD_PRIORITY = 70
     CONFIG_SPEC = {}
 
     @classmethod
