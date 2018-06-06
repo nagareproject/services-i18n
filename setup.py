@@ -36,7 +36,7 @@ setup(
     tests_require=['pytest'],
     entry_points='''
         [nagare.commands]
-        i18n = nagare.commands:Commands
+        i18n = nagare.admin.command:Commands
 
         [nagare.commands.i18n]
         locales = nagare.admin.i18n:Locales
