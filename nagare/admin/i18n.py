@@ -25,7 +25,7 @@ class Locales(command.Command):
         padding = len(max(identifiers, key=len))
 
         for identifier in sorted(identifiers):
-            print identifier.ljust(padding), Locale.parse(identifier).english_name
+            print(identifier.ljust(padding), Locale.parse(identifier).english_name)
 
 
 class Command(command.Command):
