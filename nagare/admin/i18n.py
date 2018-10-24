@@ -13,8 +13,6 @@ from nagare.admin import command
 from babel import Locale, localedata
 from babel.messages.frontend import CommandLineInterface
 
-from nagare.services.i18n import I18NService
-
 
 class Locales(command.Command):
     WITH_CONFIG_FILENAME = WITH_STARTED_SERVICES = False
@@ -51,12 +49,9 @@ class Command(command.Command):
 
         return command_name, command
 
-    def run(self, i18n_service, loglevel, **params):
+    def run(self, i18n_service, **params):
         command_name, command = self.create_command()
-
-        cli = CommandLineInterface()
-        cli._configure_logging(loglevel or logging.INFO)
-        command.log = cli.log
+        command.log = i18n_service.logger
 
         return i18n_service.run(command_name, command, **params)
 
@@ -98,7 +93,3 @@ class Compile(Command):
             directory='##init#output_dir',
             domain='##init#domain'
         )
-
-
-for cls in (Extract, Init, Update, Compile):
-    I18NService.create_config_spec(*cls.create_command())

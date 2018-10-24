@@ -268,14 +268,14 @@ class Locale(CoreLocale):
         if dirname is not None:
             self.add_translation_directory(dirname, domain)
 
-        if isinstance(timezone, basestring):
+        if isinstance(timezone, (str, type(u''))):
             timezone = pytz.timezone(timezone)
         self.tzinfo = timezone
 
         if default_timezone is None:
             default_timezone = timezone
 
-        if isinstance(default_timezone, basestring):
+        if isinstance(default_timezone, (str, type(u''))):
             default_timezone = pytz.timezone(default_timezone)
         self.default_timezone = default_timezone
 

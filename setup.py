@@ -30,10 +30,9 @@ setup(
     url='https://github.com/nagareproject/services-i18n',
     packages=find_packages(),
     zip_safe=False,
-    setup_requires=['setuptools_scm', 'pytest-runner'],
+    setup_requires=['setuptools_scm'],
     use_scm_version=True,
     install_requires=('Babel>=2.5.0', 'pytz', 'nagare-services'),
-    tests_require=['pytest'],
     entry_points='''
         [nagare.commands]
         i18n = nagare.admin.command:Commands
