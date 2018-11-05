@@ -18,7 +18,7 @@ from nagare.services import plugin
 
 class I18NService(plugin.Plugin):
     LOAD_PRIORITY = 70
-    CONFIG_SPEC = {'reloader': 'boolean(default=True)'}
+    CONFIG_SPEC = {'reload': 'boolean(default=True)'}
 
     @classmethod
     def create_config_spec(cls, command_name, command):
@@ -48,14 +48,15 @@ class I18NService(plugin.Plugin):
 
         cls.CONFIG_SPEC[command_name] = config_spec
 
-    def __init__(self, name, dist, reloader, reloader_service=None, **config_commands):
+    def __init__(self, name, dist, reload, reloader_service=None, **config_commands):
         super(I18NService, self).__init__(name, dist)
 
-        self.reloader = reloader and reloader_service
+        self.reload = reload
+        self.reloader = reloader_service
         self.config_commands = config_commands
 
     def handle_start(self, app):
-        if self.reloader and self.input_directory and os.path.isdir(self.input_directory):
+        if self.reload and self.reloader and self.input_directory and os.path.isdir(self.input_directory):
             po_files = []
 
             for root, dirs, files in os.walk(self.input_directory):
