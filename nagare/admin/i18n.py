@@ -44,8 +44,7 @@ class Command(command.Command):
     def create_command(cls, **defaults):
         command_name = cls.__name__.lower()
         command = CommandLineInterface.command_classes[command_name]()
-        for k, v in defaults.items():
-            setattr(command, k, v)
+        command.__dict__.update(defaults)
 
         return command_name, command
 
@@ -68,7 +67,7 @@ class Extract(Command):
 class Init(Command):
     @classmethod
     def create_command(cls, **defaults):
-        return super(Init, cls).create_command(input_file='##extract#output_file')
+        return super(Init, cls).create_command(input_file='${i18n.extract.output_file}')
 
     def set_arguments(self, parser):
         parser.add_argument('locale')
@@ -79,10 +78,9 @@ class Update(Command):
     @classmethod
     def create_command(cls, **defaults):
         return super(Update, cls).create_command(
-            input_file='##extract#output_file',
-            domain='##init#domain',
-            output_dir='##init#output_dir',
-            width='##init#width'
+            input_file='${i18n.extract.output_file}',
+            domain='${i18n.init.domain}',
+            output_dir='${i18n.init.output_dir}'
         )
 
 
@@ -90,6 +88,6 @@ class Compile(Command):
     @classmethod
     def create_command(cls, **defaults):
         return super(Compile, cls).create_command(
-            directory='##init#output_dir',
-            domain='##init#domain'
+            directory='${i18n.init.output_dir}',
+            domain='${i18n.init.domain}'
         )

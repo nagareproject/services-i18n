@@ -55,6 +55,18 @@ class I18NService(plugin.Plugin):
         self.reloader = reloader_service
         self.config_commands = config_commands
 
+    @property
+    def input_file(self):
+        return self.config_commands['extract']['output_file']
+
+    @property
+    def input_directory(self):
+        return self.config_commands['init']['output_dir']
+
+    @property
+    def output_directory(self):
+        return self.config_commands['compile']['directory']
+
     def handle_start(self, app):
         if self.reload and self.reloader and self.input_directory and os.path.isdir(self.input_directory):
             po_files = []
@@ -75,32 +87,10 @@ class I18NService(plugin.Plugin):
 
         return True
 
-    @property
-    def input_file(self):
-        return self._get_config_value(self.config_commands['extract']['output_file'])
-
-    @property
-    def input_directory(self):
-        return self._get_config_value(self.config_commands['init']['output_dir'])
-
-    @property
-    def output_directory(self):
-        return self._get_config_value(self.config_commands['compile']['directory'])
-
-    def _get_config_value(self, v):
-        if isinstance(v, str) and v.startswith('##'):
-            _, _, command_name, v = v.split('#')
-            v = self.config_commands[command_name][v]
-
-        return v
-
     def run(self, command_name, command, **params):
         command.initialize_options()
-
-        config = dict(self.config_commands[command_name], **params)
-        for k, v in config.items():
-            setattr(command, k, self._get_config_value(v))
-
+        command.__dict__.update(self.config_commands[command_name])
+        command.__dict__.update(params)
         command.finalize_options()
 
         return command.run()

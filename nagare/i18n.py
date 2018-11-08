@@ -14,7 +14,7 @@ import datetime
 
 import pytz
 from nagare import local
-from babel import dates, numbers, support
+from babel import dates, numbers, languages, lists, support
 from babel import core, negotiate_locale, Locale as CoreLocale
 
 
@@ -81,8 +81,56 @@ def lazy_ungettext(singular, plural, n, domain=None, **kw):
 _LN = lazy_ungettext  # noqa: E305
 
 
-def get_period_names():
-    return get_locale().get_period_names()
+def to_timezone(dt):
+    return get_locale().to_timezone(dt)
+
+
+def to_utc(dt):
+    return get_locale().to_utc(dt)
+
+
+def format_datetime(dt=None, format='medium'):
+    return get_locale().format_datetime(dt, format)
+
+
+def format_date(d=None, format='medium'):
+    return get_locale().format_date(d, format)
+
+
+def format_time(t=None, format='medium'):
+    return get_locale().format_time(t, format)
+
+
+def format_timedelta(delta, granularity='second', threshold=.85, add_direction=False, format='long'):
+    return get_locale().format_timedelta(delta, granularity, threshold, add_direction, format)
+
+
+def format_skeleton(skeleton, datetime=None, fuzzy=True):
+    return get_locale().format_skeleton(skeleton, datetime, fuzzy)
+
+
+def format_interval(start, end, skeleton=None, fuzzy=True):
+    return get_locale().format_interval(start, end, skeleton, fuzzy)
+
+
+def get_timezone(zone=None):
+    return dates.get_timezone(zone)
+
+
+def get_timezone_gmt(datetime=None, width='long', return_z=False):
+    return get_locale().get_timezone_gmt(datetime, width, return_z)
+
+
+def get_timezone_location(return_city=False):
+    return get_locale().get_timezone_location(return_city)
+
+
+def get_timezone_name(dt_or_timezone=None, width='long', uncommon=False, zone_variant=None, return_zone=False):
+    return get_locale().get_timezone_name(dt_or_timezone, width, uncommon, zone_variant, return_zone)
+
+
+def get_period_names(width='wide', context='stand-alone'):
+    return get_locale().get_period_names(width, context)
 
 
 def get_day_names(width='wide', context='format'):
@@ -113,64 +161,48 @@ def get_time_format(format='medium'):
     return get_locale().get_time_format(format)
 
 
-def get_timezone_gmt(dt=None, width='long'):
-    return get_locale().get_timezone_gmt(dt, width)
+def parse_date(string):
+    return get_locale().parse_date(string)
 
 
-def get_timezone_location(dt_or_timezone=None):
-    return get_locale().get_timezone_location(dt_or_timezone)
+def parse_time(string):
+    return get_locale().parse_time(string)
 
 
-def get_timezone_name(dt_or_timezone=None, width='long', uncommon=False):
-    return get_locale().get_timezone_name(dt_or_timezone, width, uncommon)
+def parse_pattern(pattern):
+    return dates.parse_pattern(pattern)
 
 
-def get_currency_name(currency):
-    return get_locale().get_currency_name(currency)
+def get_official_languages(regional=False, de_facto=False):
+    return get_locale().get_official_languages(regional, de_facto)
 
 
-def get_currency_symbol(currency):
-    return get_locale().get_currency_symbol(currency)
+def get_territory_language_info():
+    return get_locale().get_territory_language_info()
 
 
-def get_decimal_symbol():
-    return get_locale().get_decimal_symbol()
-
-
-def get_plus_sign_symbol():
-    return get_locale().get_plus_sign_symbol()
-
-
-def get_minus_sign_symbol():
-    return get_locale().get_minus_sign_symbol()
-
-
-def get_exponential_symbol():
-    return get_locale().get_exponential_symbol()
-
-
-def get_group_symbol():
-    return get_locale().get_group_symbol()
+def format_list(lst, style='standard'):
+    return get_locale().format_list(lst, style)
 
 
 def format_number(number):
     return get_locale().format_number(number)
 
 
-def format_decimal(number, format=None):
-    return get_locale().format_decimal(number, format)
+def format_decimal(number, format=None, decimal_quantization=True):
+    return get_locale().format_decimal(number, format, decimal_quantization)
 
 
-def format_currency(number, currency, format=None):
-    return get_locale().format_currency(number, currency, format)
+def format_currency(number, currency, format=None, currency_digits=True, format_type='standard', decimal_quantization=True):
+    return get_locale().format_currency(number, currency, format, currency_digits, format_type, decimal_quantization)
 
 
-def format_percent(number, format=None):
-    return get_locale().format_percent(number, format)
+def format_percent(number, format=None, decimal_quantization=True):
+    return get_locale().format_percent(number, format, decimal_quantization)
 
 
-def format_scientific(number, format=None):
-    return get_locale().format_scientific(number, format)
+def format_scientific(number, format=None, decimal_quantization=True):
+    return get_locale().format_scientific(number, format, decimal_quantization)
 
 
 def parse_number(string):
@@ -181,32 +213,40 @@ def parse_decimal(string):
     return get_locale().parse_decimal(string)
 
 
-def to_timezone(dt):
-    return get_locale().to_timezone(dt)
+def get_currency_name(currency, count=None):
+    return get_locale().get_currency_name(currency, count)
 
 
-def to_utc(dt):
-    return get_locale().to_utc(dt)
+def get_currency_symbol(currency):
+    return get_locale().get_currency_symbol(currency)
 
 
-def format_time(t=None, format='medium'):
-    return get_locale().format_time(t, format)
+def get_decimal_symbol():
+    return get_locale().get_decimal_symbol()
 
 
-def format_date(d=None, format='medium'):
-    return get_locale().format_date(d, format)
+def get_exponential_symbol():
+    return get_locale().get_exponential_symbol()
 
 
-def format_datetime(dt=None, format='medium'):
-    return get_locale().format_datetime(dt, format)
+def get_group_symbol():
+    return get_locale().get_group_symbol()
 
 
-def parse_time(string):
-    return get_locale().parse_time(string)
+def get_plus_sign_symbol():
+    return get_locale().get_plus_sign_symbol()
 
 
-def parse_date(string):
-    return get_locale().parse_date(string)
+def get_minus_sign_symbol():
+    return get_locale().get_minus_sign_symbol()
+
+
+def get_territory_currencies(
+        start_date=None, end_date=None,
+        tender=True, non_tender=False,
+        include_details=False
+):
+    return get_locale().get_territory_currencies(start_date, end_date, tender, non_tender, include_details)
 
 # -----------------------------------------------------------------------------
 
@@ -485,373 +525,6 @@ class Locale(CoreLocale):
         return LazyProxy(self.ungettext, singular, plural, n, domain, **kw)
     _LN = lazy_ungettext
 
-    def get_period_names(self):
-        """Return the names for day periods (AM/PM)
-
-        >>> Locale('en', 'US').get_period_names()['am']
-        u'AM'
-        """
-        return dates.get_period_names(locale=self)
-
-    def get_day_names(self, width='wide', context='format'):
-        """Return the day names for the specified format
-
-        >>> Locale('en', 'US').get_day_names('wide')[1]
-        u'Tuesday'
-        >>> Locale('es').get_day_names('abbreviated')[1]
-        u'mar'
-        >>> Locale('de', 'DE').get_day_names('narrow', context='stand-alone')[1]
-        u'D'
-
-        In:
-          - ``width`` -- 'wide', 'abbreviated' or 'narrow'
-          - ``context`` -- either 'format' or 'stand-alone'
-
-        Return:
-          - the day names
-        """
-        return dates.get_day_names(width, context, self)
-
-    def get_month_names(self, width='wide', context='format'):
-        """Return the month names for the specified format
-
-        >>> Locale('en', 'US').get_month_names('wide')[1]
-        u'January'
-        >>> Locale('es').get_month_names('abbreviated')[1]
-        u'ene'
-        >>> Locale('de', 'DE').get_month_names('narrow', context='stand-alone')[1]
-        u'J'
-
-        In:
-          - ``width`` -- 'wide', 'abbreviated' or 'narrow'
-          - ``context`` -- either 'format' or 'stand-alone'
-
-        Return:
-          - the month names
-        """
-        return dates.get_month_names(width, context, self)
-
-    def get_quarter_names(self, width='wide', context='format'):
-        """Return the quarter names for the specified format
-
-        >>> Locale('en', 'US').get_quarter_names('wide')[1]
-        u'1st quarter'
-        >>> Locale('de', 'DE').get_quarter_names('abbreviated')[1]
-        u'Q1'
-
-        In:
-          - ``width`` -- 'wide', 'abbreviated' or 'narrow'
-          - ``context`` -- either 'format' or 'stand-alone'
-
-        Return:
-          - the quarter names
-        """
-        return dates.get_quarter_names(width, context, self)
-
-    def get_era_names(self, width='wide'):
-        """Return the era names used for the specified format
-
-        >>> Locale('en', 'US').get_era_names('wide')[1]
-        u'Anno Domini'
-        >>> Locale('de', 'DE').get_era_names('abbreviated')[1]
-        u'n. Chr.'
-
-        In:
-          - ``width`` -- 'wide', 'abbreviated' or 'narrow'
-
-        Return:
-          - the era names
-        """
-        return dates.get_era_names(width, self)
-
-    def get_date_format(self, format='medium'):
-        """Return the date formatting pattern for the specified format
-
-        >>> Locale('en', 'US').get_date_format()
-        <DateTimePattern u'MMM d, yyyy'>
-        >>> Locale('de', 'DE').get_date_format('full')
-        <DateTimePattern u'EEEE, d. MMMM yyyy'>
-
-        In:
-          - ``format`` -- 'full', 'long', 'medium' or 'short'
-
-        Return:
-          - the date formatting pattern
-        """
-        return dates.get_date_format(format, self)
-
-    def get_datetime_format(self, format='medium'):
-        """Return the datetime formatting pattern for the specified format
-
-        >>> Locale('en', 'US').get_datetime_format()
-        u'{1} {0}'
-
-        In:
-          - ``format`` -- 'full', 'long', 'medium' or 'short'
-
-        Return:
-          - the datetime formatting pattern
-        """
-        return dates.get_datetime_format(format, self)
-
-    def get_time_format(self, format='medium'):
-        """Return the time formatting pattern for the specified format
-
-        >>> Locale('en', 'US').get_time_format()
-        <DateTimePattern u'h:mm:ss a'>
-        >>> Locale('de', 'DE').get_time_format('full')
-        <DateTimePattern u'HH:mm:ss v'>
-
-        In:
-          - ``format`` -- 'full', 'long', 'medium' or 'short'
-
-        Return:
-          - the time formatting pattern
-        """
-        return dates.get_time_format(format, self)
-
-    def get_timezone_gmt(self, dt=None, width='long'):
-        """Return the timezone associated with the given ``dt`` datetime object, formatted as string indicating the offset from GMT
-
-        >>> dt = datetime.datetime(2007, 4, 1, 15, 30)
-        >>> Locale('en').get_timezone_gmt(dt)
-        u'GMT+00:00'
-
-        In:
-          - ``datetime`` -- a ``datetime`` object; if ``None``, the current
-            date and time in UTC is used
-          - ``width`` -- either 'long' or 'short'
-
-        Return:
-          - The timezone
-        """
-        return dates.get_timezone_gmt(dt, width, self)
-
-    def get_timezone_location(self, dt_or_timezone=None):
-        """Return a representation of the given timezone using "location format"
-
-        The result depends on both the local display name of the country and the
-        city associated with the time zone:
-
-        >>> from pytz import timezone
-        >>> tz = timezone('America/St_Johns')
-        >>> Locale('de', 'DE').get_timezone_location(tz)
-        u"Kanada (St. John's)"
-        >>> tz = timezone('America/Mexico_City')
-        >>> Locale('de', 'DE').get_timezone_location(tz)
-        u'Mexiko (Mexiko-Stadt)'
-
-        In:
-          - ``dt_or_tzinfo`` -- ``datetime`` or ``tzinfo`` object that determines
-            the timezone; if `None`, the current date and time in UTC is assumed
-
-        Return:
-          - the timezone representation
-        """
-        return dates.get_timezone_location(dt_or_timezone, self)
-
-    def get_timezone_name(self, dt_or_timezone=None, width='long', uncommon=False):
-        """Return the localized display name for the given timezone
-
-        In:
-          - ``dt_or_timezone`` -- the timezone, specified using a ``datetime`` or ``tzinfo`` object
-          - ``width`` --
-          - ``uncommon`` --
-
-        >>> from pytz import timezone
-        >>> dt = datetime.time(15, 30, tzinfo=timezone('America/Los_Angeles'))
-        >>> Locale('en', 'US').get_timezone_name(dt)
-        u'Pacific Standard Time'
-        >>> Locale('en', 'US').get_timezone_name(dt, width='short')
-        u'PST'
-
-        In:
-          - ``dt_or_tzinfo`` -- the ``datetime`` or ``tzinfo`` object that determines
-            the timezone; if a ``tzinfo`` object is used, the resulting display
-            name will be generic, i.e. independent of daylight savings time;
-            if ``None``, the current date in UTC is assumed
-          - ``width`` -- either 'long' or 'short'
-          - ``uncommon`` -- whether even uncommon timezone abbreviations should be used
-
-        Return:
-          - the localized timezone name
-        """
-        return dates.get_timezone_name(dt_or_timezone, width, uncommon, self)
-
-    def get_currency_name(self, currency, count=None):
-        """Return the name used for the specified currency
-
-        >>> Locale('en', 'US').get_currency_name('USD')
-        u'US Dollar'
-
-        In:
-          - ``currency`` -- the currency code
-          - ``count`` -- If provided the currency name will be pluealized to that number
-
-        Return:
-          - the currency name
-        """
-        return numbers.get_currency_name(currency, count, self)
-
-    def get_currency_symbol(self, currency):
-        """Return the symbol used for the specified currency
-
-        >>> Locale('en', 'US').get_currency_symbol('USD')
-        u'$'
-
-        In:
-          - ``currency`` -- the currency code
-
-        Return:
-          - the currency symbol
-        """
-        return numbers.get_currency_symbol(currency, self)
-
-    def get_decimal_symbol(self):
-        """Return the symbol used to separate decimal fractions
-
-        >>> Locale('en', 'US').get_decimal_symbol()
-        u'.'
-        """
-        return numbers.get_decimal_symbol(self)
-
-    def get_plus_sign_symbol(self):
-        """Return the plus sign symbol
-
-        >>> Locale('en', 'US').get_plus_sign_symbol()
-        u'+'
-        """
-        return numbers.get_plus_sign_symbol(self)
-
-    def get_minus_sign_symbol(self):
-        """Return the plus sign symbol
-
-        >>> Locale('en', 'US').get_minus_sign_symbol()
-        u'-'
-        """
-        return numbers.get_minus_sign_symbol(self)
-
-    def get_exponential_symbol(self):
-        """Return the symbol used to separate mantissa and exponent
-
-        >>> Locale('en', 'US').get_exponential_symbol()
-        u'E'
-        """
-        return numbers.get_exponential_symbol(self)
-
-    def get_group_symbol(self):
-        """Return the symbol used to separate groups of thousands
-
-        >>> Locale('en', 'US').get_group_symbol()
-        u','
-        """
-        return numbers.get_group_symbol(self)
-
-    def format_number(self, number):
-        """Return the given number formatted
-
-        >>> Locale('en', 'US').format_number(1099)
-        u'1,099'
-        """
-        return numbers.format_number(number, self)
-
-    def format_decimal(self, number, format=None):
-        """Return the given decimal number formatted
-
-        >>> Locale('en', 'US').format_decimal(1.2345)
-        u'1.234'
-        >>> Locale('en', 'US').format_decimal(1.2346)
-        u'1.235'
-        >>> Locale('en', 'US').format_decimal(-1.2346)
-        u'-1.235'
-        >>> Locale('sv', 'SE').format_decimal(1.2345)
-        u'1,234'
-        >>> Locale('de').format_decimal(12345)
-        u'12.345'
-        """
-        return numbers.format_decimal(number, format, self)
-
-    def format_currency(self, number, currency, format=None):
-        """Return formatted currency value
-
-        >>> Locale('en', 'US').format_currency(1099.98, 'USD')
-        u'$1,099.98'
-        >>> Locale('es', 'CO').format_currency(1099.98, 'USD')
-        u'US$\\xa01.099,98'
-        >>> Locale('de', 'DE').format_currency(1099.98, 'EUR')
-        u'1.099,98\\xa0\\u20ac'
-
-        The pattern can also be specified explicitly:
-
-        >>> Locale('en', 'US').format_currency(1099.98, 'EUR', u'\xa4\xa4 #,##0.00')
-        u'EUR 1,099.98'
-        """
-        return numbers.format_currency(number, currency, format, self)
-
-    def format_percent(self, number, format=None):
-        """Return formatted percent value
-
-        >>> Locale('en', 'US').format_percent(0.34)
-        u'34%'
-        >>> Locale('en', 'US').format_percent(25.1234)
-        u'2,512%'
-        >>> Locale('sv', 'SE').format_percent(25.1234)
-        u'2\\xa0512\\xa0%'
-
-        The format pattern can also be specified explicitly:
-
-        >>> Locale('en', 'US').format_percent(25.1234, u'#,##0\u2030')
-        u'25,123\u2030'
-        """
-        return numbers.format_percent(number, format, self)
-
-    def format_scientific(self, number, format=None):
-        """Return value formatted in scientific notation
-
-        >>> Locale('en', 'US').format_scientific(10000)
-        u'1E4'
-
-        The format pattern can also be specified explicitly:
-
-        >>> Locale('en', 'US').format_scientific(1234567, u'##0E00')
-        u'1.23E06'
-        """
-        return numbers.format_scientific(number, format, self)
-
-    def parse_number(self, string):
-        """Parse localized number string into a long integer
-
-        >>> Locale('en', 'US').parse_number('1,099')
-        1099L
-        >>> Locale('de', 'DE').parse_number('1.099')
-        1099L
-
-        When the given string cannot be parsed, an exception is raised:
-
-        >>> Locale('de').parse_number('1.099,98')
-        Traceback (most recent call last):
-            ...
-        NumberFormatError: '1.099,98' is not a valid number
-        """
-        return numbers.parse_number(string, self)
-
-    def parse_decimal(self, string):
-        """Parse localized decimal string into a float
-
-        >>> Locale('en', 'US').parse_decimal('1,099.98')
-        1099.98
-        >>> Locale('de').parse_decimal('1.099,98')
-        1099.98
-
-        When the given string cannot be parsed, an exception is raised:
-
-        >>> Locale('de').parse_decimal('2,109,998')
-        Traceback (most recent call last):
-            ...
-        NumberFormatError: '2,109,998' is not a valid decimal number
-        """
-        return numbers.parse_decimal(string, self)
-
     def to_timezone(self, dt):
         """Return a localized datetime object
 
@@ -883,24 +556,41 @@ class Locale(CoreLocale):
 
         return dt.astimezone(pytz.UTC)
 
+    # Date & time formatting
+    # ======================
+
+    def format_datetime(self, dt=None, format='medium'):
+        """Return a date formatted according to the given pattern
+
+        In:
+          - ``dt`` -- ``datetime`` object; if ``None``, the current date and time is used
+          - ``format`` -- 'full', 'long', 'medium', or 'short', or a custom date/time pattern
+
+        Return:
+          - The formatted datetime string
+        """
+        if dt:
+            dt = self.to_timezone(dt)
+        return dates.format_datetime(dt, format, locale=self, tzinfo=self.tzinfo)
+
+    def format_date(self, d=None, format='medium'):
+        """Return a date formatted according to the given pattern
+
+        In:
+          - ``d`` -- ``date`` or ``datetime`` object; if ``None``, the current date is used
+          - ``format`` -- 'full', 'long', 'medium', 'short' or a custom date/time pattern
+
+        Return:
+          - the formatted date string
+        """
+        return dates.format_date(d, format, self)
+
     def format_time(self, t=None, format='medium'):
         """Return a time formatted according to the given pattern
 
-        >>> t = datetime.time(15, 30)
-        >>> Locale('en', 'US').format_time(t)
-        u'3:30:00 PM'
-        >>> Locale('de', 'DE').format_time(t, format='short')
-        u'15:30'
-
-        If you don't want to use the locale default formats, you can specify a
-        custom time pattern:
-
-        >>> Locale('en').format_time(t, "hh 'o''clock' a")
-        u"03 o'clock PM"
-
         In:
           - ``t`` --  ``time`` or ``datetime`` object; if `None`, the current time in UTC is used
-          - ``format`` -- 'full', 'long', 'medium', or 'short', or a custom date/time pattern
+          - ``format`` -- 'full', 'long', 'medium', 'short' or a custom date/time pattern
 
         Returns:
           - the formatted time string
@@ -914,63 +604,221 @@ class Locale(CoreLocale):
 
         return dates.format_time(t, format, locale=self, tzinfo=self.tzinfo)
 
-    def format_date(self, d=None, format='medium'):
-        """Return a date formatted according to the given pattern
-
-        >>> d = datetime.date(2007, 04, 01)
-        >>> Locale('en', 'US').format_date(d)
-        u'Apr 1, 2007'
-        >>> Locale('de', 'DE').format_date(d, format='full')
-        u'Sonntag, 1. April 2007'
-
-        If you don't want to use the locale default formats, you can specify a
-        custom date pattern:
-
-        >>> Locale('en').format_date(d, "EEE, MMM d, ''yy")
-        u"Sun, Apr 1, '07"
+    def format_timedelta(self, delta, granularity='second', threshold=.85, add_direction=False, format='long'):
+        """Return a time delta
 
         In:
-          - ``d`` -- ``date`` or ``datetime`` object; if ``None``, the current date is used
-          - ``format`` -- 'full', 'long', 'medium', or 'short', or a custom date/time pattern
+          - ``delta`` -- a `timedelta` object or the delta in seconds
+          - ``granularity`` -- 'year', 'month', 'week', 'day', 'hour', 'minute' or 'second'
+          - ``threshold`` -- factor that determines at which point the presentation switches to the next higher unit
+          - ``add_direction`` -- add information about past or future
+          - ``format`` -- 'narrow', 'short' or 'long'
 
-        Return:
-          - the formatted date string
+        Returns:
+          - the formatted time delta
         """
-        return dates.format_date(d, format, self)
+        return dates.format_timedelta(delta, granularity, threshold, add_direction, format, self)
 
-    def format_datetime(self, dt=None, format='medium'):
-        """Return a date formatted according to the given pattern
-
-        >>> dt = datetime.datetime(2007, 04, 01, 15, 30)
-        >>> Locale('en', 'US').format_datetime(dt)
-        u'Apr 1, 2007 3:30:00 PM'
-
-        >>> from pytz import timezone
-        >>> dt = datetime.datetime(2007, 04, 01, 15, 30)
-        >>> Locale('fr', 'FR', timezone=timezone('Europe/Paris'), default_timezone=pytz.UTC).format_datetime(dt, 'full')
-        u'dimanche 1 avril 2007 17:30:00 HEC'
-        >>> Locale('en', timezone=timezone('US/Eastern'), default_timezone=pytz.UTC).format_datetime(dt, "yyyy.MM.dd G 'at' HH:mm:ss zzz")
-        u'2007.04.01 AD at 11:30:00 EDT'
+    def format_skeleton(self, skeleton, datetime=None, fuzzy=True):
+        """Return a time and/or date formatted according to the given pattern
 
         In:
-          - ``dt`` -- ``datetime`` object; if ``None``, the current date and time is used
-          - ``format`` -- 'full', 'long', 'medium', or 'short', or a custom date/time pattern
+          - ``skeleton`` -- the pattern
+          - ``datetime`` --a `time` or `datetime` object; if None, the current time in UTC is used
+          - ``fuzzy`` -- If the skeleton is not found, allow choosing a skeleton that's close enough to it
+
+        Returns:
+          - the formatted time/date
+        """
+        return dates.format_skeleton(skeleton, datetime, self.tzinfo, fuzzy, self)
+
+    def format_interval(self, start, end, skeleton=None, fuzzy=True):
+        """Format an interval between two instants according to the given pattern
+
+        In:
+          - ``start`` -- First instant (`datetime`, `date` or `time`)
+          - ``end`` -- Second instant (`datetime`, `date` or `time`)
+          - ``skeleton`` -- the pattern
+          - ``fuzzy`` -- If the skeleton is not found, allow choosing a skeleton that's close enough to it
+
+        Returns:
+          - the formatted interval
+        """
+        if isinstance(start, datetime.datetime):
+            start = self.to_utc(start)
+
+        if isinstance(end, datetime.datetime):
+            end = self.to_utc(end)
+
+        return dates.format_interval(start, end, skeleton, self.tzinfo, fuzzy, self)
+
+    # Timezone functionality
+    # ======================
+
+    def get_timezone_gmt(self, datetime=None, width='long', return_z=False):
+        """Format the timezone associated with the given datetime
+
+        In:
+          - ``datetime`` -- the `datetime`
+          - ``width`` -- 'long', 'short', 'iso8601' or 'iso8601_short'
+          - ``return_z`` -- Have indicator 'Z' when local time offset is 0 to be included?
+
+        Returns:
+          - the formatted timezone
+        """
+        return dates.get_timezone_gmt(datetime, width, self, return_z)
+
+    def get_timezone_location(self, dt_or_timezone=None, return_city=False):
+        """Return a representation of the given timezone using "location format"
+
+        The result depends on both the local display name of the country and the
+        city associated with the time zone
+
+        In:
+          - ``dt_or_tzinfo`` -- ``datetime`` or ``tzinfo`` object that determines
+            the timezone; if `None`, the current date and time in UTC is assumed
+          - ``return_city`` -- Is the city (location) for the time zone to be included?
 
         Return:
-          - The formatted datetime string
+          - the timezone representation
         """
-        if dt:
-            dt = self.to_timezone(dt)
-        return dates.format_datetime(dt, format, locale=self, tzinfo=self.tzinfo)
+        return dates.get_timezone_location(dt_or_timezone, self, return_city)
+
+    def get_timezone_name(self, dt_or_timezone=None, width='long', uncommon=False, zone_variant=None, return_zone=False):
+        """Return the localized display name for the given timezone
+
+        In:
+          - ``dt_or_tzinfo`` -- the ``datetime`` or ``tzinfo`` object that determines
+            the timezone; if a ``tzinfo`` object is used, the resulting display
+            name will be generic, i.e. independent of daylight savings time;
+            if ``None``, the current date in UTC is assumed
+          - ``width`` -- either 'long' or 'short'
+          - ``uncommon`` -- whether even uncommon timezone abbreviations should be used
+          - ``zone_variant`` -- defines the zone variation to return
+          - ``return_zone`` -- long time zone ID?
+
+        Return:
+          - the localized timezone name
+        """
+        return dates.get_timezone_name(dt_or_timezone, width, uncommon, self, zone_variant, return_zone)
+
+    # Data access
+    # ===========
+
+    def get_period_names(self, width='wide', context='stand-alone'):
+        """Return the names for day periods (AM/PM)
+
+        In:
+          - ``width`` -- 'abbreviated', 'narrow' or 'wide'
+          - ``context`` -- 'format' or 'stand-alone'
+
+        Return:
+          - the names for day periods (AM/PM)
+        """
+        return dates.get_period_names(width, context, locale=self)
+
+    def get_day_names(self, width='wide', context='format'):
+        """Return the day names for the specified format
+
+        In:
+          - ``width`` -- 'wide', 'abbreviated' or 'narrow'
+          - ``context`` -- either 'format' or 'stand-alone'
+
+        Return:
+          - the day names
+        """
+        return dates.get_day_names(width, context, self)
+
+    def get_month_names(self, width='wide', context='format'):
+        """Return the month names for the specified format
+
+        In:
+          - ``width`` -- 'wide', 'abbreviated' or 'narrow'
+          - ``context`` -- either 'format' or 'stand-alone'
+
+        Return:
+          - the month names
+        """
+        return dates.get_month_names(width, context, self)
+
+    def get_quarter_names(self, width='wide', context='format'):
+        """Return the quarter names for the specified format
+
+        In:
+          - ``width`` -- 'wide', 'abbreviated' or 'narrow'
+          - ``context`` -- either 'format' or 'stand-alone'
+
+        Return:
+          - the quarter names
+        """
+        return dates.get_quarter_names(width, context, self)
+
+    def get_era_names(self, width='wide'):
+        """Return the era names used for the specified format
+
+        In:
+          - ``width`` -- 'wide', 'abbreviated' or 'narrow'
+
+        Return:
+          - the era names
+        """
+        return dates.get_era_names(width, self)
+
+    def get_date_format(self, format='medium'):
+        """Return the date formatting pattern for the specified format
+
+        In:
+          - ``format`` -- 'full', 'long', 'medium' or 'short'
+
+        Return:
+          - the date formatting pattern
+        """
+        return dates.get_date_format(format, self)
+
+    def get_datetime_format(self, format='medium'):
+        """Return the datetime formatting pattern for the specified format
+
+        In:
+          - ``format`` -- 'full', 'long', 'medium' or 'short'
+
+        Return:
+          - the datetime formatting pattern
+        """
+        return dates.get_datetime_format(format, self)
+
+    def get_time_format(self, format='medium'):
+        """Return the time formatting pattern for the specified format
+
+        In:
+          - ``format`` -- 'full', 'long', 'medium' or 'short'
+
+        Return:
+          - the time formatting pattern
+        """
+        return dates.get_time_format(format, self)
+
+    # Basic parsing
+    # =============
+
+    def parse_date(self, string):
+        """Parse a date from a string
+
+        This function uses the date format for the locale as a hint to determine
+        the order in which the date fields appear in the string.
+
+        In:
+          - ``string`` -- the string containing the date
+
+        Return:
+          - a ``datetime.datetime`` object
+        """
+        return dates.parse_date(string, self)
 
     def parse_time(self, string):
         """Parse a time from a string
 
         This function uses the time format for the locale as a hint to determine
         the order in which the time fields appear in the string.
-
-        >>> Locale('en', 'US').parse_time('15:30:00')
-        datetime.time(15, 30)
 
         In:
           - ``string`` -- the string containing the time
@@ -980,24 +828,160 @@ class Locale(CoreLocale):
         """
         return dates.parse_time(string, self)
 
-    def parse_date(self, string):
-        """Parse a date from a string
+    # Official languages
+    # ==================
 
-        This function uses the date format for the locale as a hint to determine
-        the order in which the date fields appear in the string.
-
-        >>> Locale('en', 'US').parse_date('4/1/04')
-        datetime.date(2004, 4, 1)
-        >>> Locale('de', 'DE').parse_date('01.04.2004')
-        datetime.date(2004, 4, 1)
+    def get_official_languages(self, regional=False, de_facto=False):
+        """Get the official language(s) for the given territory
 
         In:
-          - ``string`` -- the string containing the date
+          - ``regional`` -- include the regionally official languages
+          - ``de_facto`` -- include the "de facto" official languages
 
         Return:
-          - a ``datetime.datetime`` object
+          - the languages
         """
-        return dates.parse_date(string, self)
+        return languages.get_official_languages(self.territory, regional, de_facto)
+
+    def get_territory_language_info(self):
+        """Get a dictionary of language information for a territory
+
+        Return:
+          - the languages
+        """
+        return languages.get_territory_language_info(self.territory)
+
+    # List formatting
+    # ===============
+
+    def format_list(self, lst, style='standard'):
+        """Format the items in lst as a list.
+
+        In:
+          - `lst` -- the items
+          - `style` -- 'standard-short', 'or', 'or-short', 'unit', 'unit-short' or
+            'unit-narrow'
+
+        Return:
+          - the formatted list
+        """
+        return lists.format_list(lst, style, self)
+
+    # Number formatting
+    # =================
+
+    def format_number(self, number):
+        """Return the given number formatted
+        """
+        return numbers.format_number(number, self)
+
+    def format_decimal(self, number, format=None, decimal_quantization=True):
+        """Return the given decimal number formatted
+        """
+        return numbers.format_decimal(number, format, self, decimal_quantization)
+
+    def format_currency(
+            self,
+            number, currency, format=None,
+            currency_digits=True, format_type='standard', decimal_quantization=True
+    ):
+        """Return formatted currency value
+        """
+        return numbers.format_currency(number, currency, format, self, currency_digits, format_type, decimal_quantization)
+
+    def format_percent(self, number, format=None, decimal_quantization=True):
+        """Return formatted percent value
+        """
+        return numbers.format_percent(number, format, self, decimal_quantization)
+
+    def format_scientific(self, number, format=None, decimal_quantization=True):
+        """Return value formatted in scientific notation
+        """
+        return numbers.format_scientific(number, format, self, decimal_quantization)
+
+    # Number parsing
+    # ==============
+
+    def parse_number(self, string):
+        """Parse localized number string into a long integer
+        """
+        return numbers.parse_number(string, self)
+
+    def parse_decimal(self, string):
+        """Parse localized decimal string into a float
+        """
+        return numbers.parse_decimal(string, self)
+
+    # Data access
+    # ===========
+
+    def get_currency_name(self, currency, count=None):
+        """Return the name used for the specified currency
+
+        In:
+          - ``currency`` -- the currency code
+          - ``count`` -- If provided the currency name will be pluealized to that number
+
+        Return:
+          - the currency name
+        """
+        return numbers.get_currency_name(currency, count, self)
+
+    def get_currency_symbol(self, currency):
+        """Return the symbol used for the specified currency
+
+        In:
+          - ``currency`` -- the currency code
+
+        Return:
+          - the currency symbol
+        """
+        return numbers.get_currency_symbol(currency, self)
+
+    def get_decimal_symbol(self):
+        """Return the symbol used to separate decimal fractions
+        """
+        return numbers.get_decimal_symbol(self)
+
+    def get_exponential_symbol(self):
+        """Return the symbol used to separate mantissa and exponent
+        """
+        return numbers.get_exponential_symbol(self)
+
+    def get_group_symbol(self):
+        """Return the symbol used to separate groups of thousands
+        """
+        return numbers.get_group_symbol(self)
+
+    def get_plus_sign_symbol(self):
+        """Return the plus sign symbol
+        """
+        return numbers.get_plus_sign_symbol(self)
+
+    def get_minus_sign_symbol(self):
+        """Return the plus sign symbol
+        """
+        return numbers.get_minus_sign_symbol(self)
+
+    def get_territory_currencies(
+            self,
+            start_date=None, end_date=None,
+            tender=True, non_tender=False,
+            include_details=False
+    ):
+        """Returns the list of currencies for the given territory that are valid for the given date range
+
+        In:
+          - ``start_date`` -- the start date. If not given today is assumed
+          - ``end_date`` -- the end date. If not given the start date is assumed
+          - ``tender`` -- controls whether tender currencies should be included
+          - ``non_tender`` -- controls whether non-tender currencies should be included
+          - ``include_detail`` -- the return value will be a dictionnary
+
+        Return:
+          - the currencies
+        """
+        return numbers.get_territory_currencies(self.territory, start_date, end_date, tender, non_tender, include_details)
 
     def __enter__(self):
         """Push this locale to the stack
