@@ -25,15 +25,15 @@ class I18NBaseLocale(plugin.Plugin):
         self.dirname = dirname or i18n_service.output_directory
         self.config = config
 
+    @staticmethod
+    def set_locale(locale):
+        set_locale(locale)
+
     def create_locale(self, **config):
         return self.LOCALE_FACTORY(dirname=self.dirname, **dict(self.config, **config))
 
     def get_locale(self, **params):
-        return None
-
-    @staticmethod
-    def set_locale(locale):
-        set_locale(locale)
+        raise NotImplementedError()
 
     def handle_request(self, chain, **params):
         locale = self.get_locale(**params)
@@ -67,33 +67,6 @@ class I18NPredefinedLocale(I18NBaseLocale):
 # -----------------------------------------------------------------------------
 
 
-class I18NNegociatedLocale(I18NBaseLocale):
-    CONFIG_SPEC = {
-        'languages': 'string_list(default=list())',
-        'dirname': 'string(default=None)',
-        'domain': 'string(default=None)',
-        'timezone': 'string(default=None)',
-        'default_timezone': 'string(default=None)'
-    }
-    LOCALE_FACTORY = NegotiatedLocale
-
-    def __init__(self, name, dist, languages=(), services_service=None, **config):
-        locales = [(language + '_').split('_')[:2] for language in languages]
-        default_locale = self.locales[0] if self.locales else (None, None)
-
-        services_service(
-            super(I18NNegociatedLocale, self).__init__,
-            name, dist,
-            locales=locales, default_locale=default_locale,
-            **config
-        )
-
-    def get_locale(self, request, **params):
-        return super(I18NNegociatedLocale, self).create_locale(request=request)
-
-# -----------------------------------------------------------------------------
-
-
 class I18NLocale(I18NPredefinedLocale):
     CONFIG_SPEC = {
         'get_locale': 'string(default=None)',
@@ -105,3 +78,37 @@ class I18NLocale(I18NPredefinedLocale):
 
         if get_locale:
             self.get_locale = reference.load_object(get_locale)[0].__get__(self, self.__class__)
+
+# -----------------------------------------------------------------------------
+
+
+class I18NNegociatedLocale(I18NBaseLocale):
+    CONFIG_SPEC = {
+        'locales': 'string_list(default=list())',
+        'default_locale': 'string(default="")',
+        'dirname': 'string(default=None)',
+        'domain': 'string(default=None)',
+        'timezone': 'string(default=None)',
+        'default_timezone': 'string(default=None)'
+    }
+    LOCALE_FACTORY = NegotiatedLocale
+
+    def __init__(
+        self,
+        name, dist,
+        locales=(), default_locale='',
+        services_service=None,
+        **config
+    ):
+        locales = [(locale + '_').split('_')[:2] for locale in locales]
+        default_locale = (default_locale + '_').split('_')[:2]
+
+        services_service(
+            super(I18NNegociatedLocale, self).__init__,
+            name, dist,
+            locales=locales, default_locale=tuple(default_locale),
+            **config
+        )
+
+    def get_locale(self, request, **params):
+        return super(I18NNegociatedLocale, self).create_locale(request=request)

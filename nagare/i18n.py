@@ -193,7 +193,10 @@ def format_decimal(number, format=None, decimal_quantization=True):
     return get_locale().format_decimal(number, format, decimal_quantization)
 
 
-def format_currency(number, currency, format=None, currency_digits=True, format_type='standard', decimal_quantization=True):
+def format_currency(
+    number, currency, format=None, currency_digits=True,
+    format_type='standard', decimal_quantization=True
+):
     return get_locale().format_currency(number, currency, format, currency_digits, format_type, decimal_quantization)
 
 
@@ -320,17 +323,6 @@ class Locale(CoreLocale):
         self.default_timezone = default_timezone
 
         self._previous_locales = []
-
-        # By default, load the translation files for the 'nagare' domain
-        # from the nagare directories
-        '''
-        nagare_translations_dir = pkg_resources.resource_filename(
-            pkg_resources.Requirement.parse('nagare'),
-            'nagare/data/locale'
-        )
-        self.add_translation_directory(nagare_translations_dir, 'nagare')
-        '''
-
         self.zone_formats['region'] = '%s'
 
     def add_translation_directory(self, dirname, domain=None):

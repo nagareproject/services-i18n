@@ -14,7 +14,9 @@ from nagare import local
 from nagare import i18n
 from nagare.i18n import Locale, set_locale
 
-local.request = local.Process()
+
+def setup_module(module):
+    local.request = local.Process()
 
 
 def test_format_list():

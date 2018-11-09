@@ -61,13 +61,18 @@ class Command(command.Command):
 
 
 class Extract(Command):
-    pass
+    @classmethod
+    def create_command(cls, **defaults):
+        return super(Extract, cls).create_command(output_file='')
 
 
 class Init(Command):
     @classmethod
     def create_command(cls, **defaults):
-        return super(Init, cls).create_command(input_file='${i18n.extract.output_file}')
+        return super(Init, cls).create_command(
+            input_file='${i18n.extract.output_file}',
+            output_dir=''
+        )
 
     def set_arguments(self, parser):
         parser.add_argument('locale')
