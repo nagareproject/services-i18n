@@ -16,6 +16,10 @@ from nagare.admin import i18n
 from nagare.services import plugin
 
 
+def on_change(path, o, method):
+    return getattr(o, method)(path)
+
+
 class I18NService(plugin.Plugin):
     LOAD_PRIORITY = 70
     CONFIG_SPEC = {'reload': 'boolean(default=True)'}
@@ -74,17 +78,15 @@ class I18NService(plugin.Plugin):
             for root, dirs, files in os.walk(self.input_directory):
                 po_files.extend(os.path.join(root, file) for file in files if file.endswith('.po'))
 
-            self.reloader.watch_files([self.input_file], self.update_on_change)
-            self.reloader.watch_files(po_files, self.compile_on_change)
+            self.reloader.watch_files([self.input_file], on_change, o=self, method='update_on_change')
+            self.reloader.watch_files(po_files, on_change, o=self, method='compile_on_change')
 
     def update_on_change(self, path):
         i18n.Update().run(self)
-
         return False
 
     def compile_on_change(self, path):
         i18n.Compile().run(self)
-
         return True
 
     def run(self, command_name, command, **params):
