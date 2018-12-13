@@ -19,11 +19,11 @@ from babel import core, negotiate_locale, Locale as CoreLocale
 
 
 def get_locale():
-    return getattr(local.request, 'locale')
+    return getattr(local.request, 'nagare_locale', None)
 
 
 def set_locale(locale):
-    local.request.locale = locale
+    local.request.nagare_locale = locale
 
 
 class LazyProxy(support.LazyProxy):
