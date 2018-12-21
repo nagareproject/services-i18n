@@ -19,7 +19,7 @@ from babel import core, negotiate_locale, Locale as CoreLocale
 
 
 def get_locale():
-    return getattr(local.request, 'nagare_locale', None)
+    return getattr(local.request, 'nagare_locale', Locale())
 
 
 def set_locale(locale):
@@ -29,11 +29,10 @@ def set_locale(locale):
 class LazyProxy(support.LazyProxy):
     """Picklable ``babel.support.LazyProxy`` objects
     """
-    @property
-    def value(self):
+    def __init__(self, func, *args, **kw):
         """Always evaluate, without any cache
         """
-        return self._func(*self._args, **self._kwargs)
+        super(LazyProxy, self).__init__(func, *args, enable_cache=True, **kw)
 
     def __getstate__(self):
         return self._func, self._args, self._kwargs
