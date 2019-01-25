@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2018 Net-ng.
+# Copyright (c) 2008-2019 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -14,7 +14,12 @@ from babel import Locale, localedata
 from babel.messages.frontend import CommandLineInterface
 
 
+class Commands(command.Commands):
+    DESC = 'i18n catalogs management subcommands'
+
+
 class Locales(command.Command):
+    DESC = 'display all the locales code'
     WITH_CONFIG_FILENAME = WITH_STARTED_SERVICES = False
 
     @staticmethod
