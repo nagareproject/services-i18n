@@ -24,14 +24,13 @@ class I18NLocale(plugin.Plugin):
         super(I18NLocale, self).__init__(name, dist)
 
         self.dirname = dirname or i18n_service.output_directory
-        self.config = config
 
     @staticmethod
     def set_locale(locale):
         set_locale(locale)
 
     def create_locale(self, **config):
-        return self.LOCALE_FACTORY(dirname=self.dirname, **dict(self.config, **config))
+        return self.LOCALE_FACTORY(dirname=self.dirname, **dict(self.plugin_config, **config))
 
     def handle_request(self, chain, **params):
         locale = self.get_locale(**params)
