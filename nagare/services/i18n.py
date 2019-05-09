@@ -16,13 +16,13 @@ from nagare.admin import i18n
 from nagare.services import plugin
 
 
-def on_change(path, o, method):
+def on_change(reloader, path, o, method):
     return getattr(o, method)(path)
 
 
 class I18NService(plugin.Plugin):
     LOAD_PRIORITY = 70
-    CONFIG_SPEC = {'reload': 'boolean(default=True)'}
+    CONFIG_SPEC = {'watch': 'boolean(default=True)'}
 
     @classmethod
     def create_config_spec(cls, command_name, command):
@@ -52,11 +52,10 @@ class I18NService(plugin.Plugin):
 
         cls.CONFIG_SPEC[command_name] = config_spec
 
-    def __init__(self, name, dist, reload, reloader_service=None, **config_commands):
+    def __init__(self, name, dist, watch, reloader_service=None, **config_commands):
         super(I18NService, self).__init__(name, dist)
 
-        self.reload = reload
-        self.reloader = reloader_service
+        self.reloader = reloader_service if watch else None
         self.config_commands = config_commands
 
     @property
@@ -65,21 +64,21 @@ class I18NService(plugin.Plugin):
 
     @property
     def input_directory(self):
-        return self.config_commands['init']['output_dir']
+        return self.config_commands['init']['output_dir'] or os.path.dirname(self.input_file)
 
     @property
     def output_directory(self):
-        return self.config_commands['compile']['directory']
+        return self.config_commands['compile']['directory'] or self.input_directory
 
     def handle_start(self, app):
-        if self.reload and self.reloader and self.input_directory and os.path.isdir(self.input_directory):
-            po_files = []
-
+        if (self.reloader is not None) and self.input_directory and os.path.isdir(self.input_directory):
             for root, dirs, files in os.walk(self.input_directory):
-                po_files.extend(os.path.join(root, file) for file in files if file.endswith('.po'))
+                for filename in files:
+                    if filename.endswith('.po'):
+                        filename = os.path.join(root, filename)
+                        self.reloader.watch_file(filename, on_change, o=self, method='compile_on_change')
 
-            self.reloader.watch_files([self.input_file], on_change, o=self, method='update_on_change')
-            self.reloader.watch_files(po_files, on_change, o=self, method='compile_on_change')
+            self.reloader.watch_file(self.input_file, on_change, o=self, method='update_on_change')
 
     def update_on_change(self, path):
         i18n.Update().run(self)
@@ -88,14 +87,6 @@ class I18NService(plugin.Plugin):
     def compile_on_change(self, path):
         i18n.Compile().run(self)
         return True
-
-    def run(self, command_name, command, **params):
-        command.initialize_options()
-        command.__dict__.update(self.config_commands[command_name])
-        command.__dict__.update(params)
-        command.finalize_options()
-
-        return command.run()
 
 
 for cls in (i18n.Extract, i18n.Init, i18n.Update, i18n.Compile):

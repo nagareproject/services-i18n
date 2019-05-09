@@ -7,6 +7,7 @@
 # this distribution.
 # --
 
+import os
 import logging
 
 from nagare.admin import command
@@ -32,6 +33,7 @@ class Locales(command.Command):
 
 
 class Command(command.Command):
+
     def set_arguments(self, parser, **defaults):
         parser.add_argument(
             '-v', '--verbose',
@@ -53,11 +55,20 @@ class Command(command.Command):
 
         return command_name, command
 
+    @staticmethod
+    def run_command(command, **config):
+        command.initialize_options()
+        command.__dict__.update(config)
+        command.finalize_options()
+
+        return command.run()
+
     def run(self, i18n_service, **params):
         command_name, command = self.create_command()
         command.log = i18n_service.logger
 
-        return i18n_service.run(command_name, command, **params)
+        config = dict(i18n_service.plugin_config[command_name], **params)
+        return self.run_command(command, **config)
 
     @property
     def DESC(self):
@@ -66,38 +77,86 @@ class Command(command.Command):
 
 
 class Extract(Command):
+
     @classmethod
     def create_command(cls, **defaults):
-        return super(Extract, cls).create_command(output_file='')
+        return super(Extract, cls).create_command(
+            input_dirs='$root',
+            output_file='$root/data/locale/messages.pot'
+        )
+
+    def run_command(self, command, output_file, keywords, **config):
+        output_dir = os.path.dirname(output_file)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        keywords = keywords or (
+            '_ , _N:1,2 , _L , _LN:1,2 , gettext , ugettext , ngettext:1,2 , '
+            'ungettext:1,2 , lazy_gettext , lazy_ugettext , lazy_ngettext:1,2 , lazy_ungettext:1,2'
+        )
+
+        return super(Extract, self).run_command(command, output_file=output_file, keywords=keywords, **config)
 
 
 class Init(Command):
-    @classmethod
-    def create_command(cls, **defaults):
-        return super(Init, cls).create_command(
-            input_file='${i18n.extract.output_file}',
-            output_dir=''
-        )
 
     def set_arguments(self, parser):
         parser.add_argument('locale')
         super(Init, self).set_arguments(parser)
 
+    @classmethod
+    def create_command(cls, **defaults):
+        return super(Init, cls).create_command(input_file='${i18n.extract.output_file}', output_dir='')
+
+    def run_command(self, command, input_file, output_dir, **config):
+        output_dir = output_dir or os.path.dirname(input_file)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        return super(Init, self).run_command(
+            command,
+            input_file=input_file,
+            output_dir=output_dir,
+            **config
+        )
+
 
 class Update(Command):
+
     @classmethod
     def create_command(cls, **defaults):
         return super(Update, cls).create_command(
             input_file='${i18n.extract.output_file}',
             domain='${i18n.init.domain}',
-            output_dir='${i18n.init.output_dir}'
+            output_dir=''
+        )
+
+    def run_command(self, command, input_file, output_dir, **config):
+        output_dir = output_dir or os.path.dirname(input_file)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        return super(Update, self).run_command(
+            command,
+            input_file=input_file,
+            output_dir=output_dir,
+            **config
         )
 
 
 class Compile(Command):
+
     @classmethod
     def create_command(cls, **defaults):
         return super(Compile, cls).create_command(
+            input_file='${i18n.extract.output_file}',
             directory='${i18n.init.output_dir}',
             domain='${i18n.init.domain}'
         )
+
+    def run_command(self, command, input_file, directory, **config):
+        directory = directory or os.path.dirname(input_file)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        return super(Compile, self).run_command(command, directory=directory, **config)

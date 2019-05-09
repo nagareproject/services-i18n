@@ -156,9 +156,9 @@ def test_get_timezone_location():
 def test_get_timezone_name():
     dt = Locale(timezone='America/Los_Angeles').to_timezone(datetime.datetime.now())
     set_locale(Locale('en', 'US'))
-    assert i18n.get_timezone_name(dt) == 'Pacific Standard Time'
+    assert i18n.get_timezone_name(dt) in ('Pacific Standard Time', 'Pacific Daylight Time')
     assert i18n.get_timezone_name(dt, return_zone=True) == 'America/Los_Angeles'
-    assert i18n.get_timezone_name(dt, width='short') == 'PST'
+    assert i18n.get_timezone_name(dt, width='short') in ('PST', 'PDT')
 
     tz = pytz.timezone('America/Los_Angeles')
     assert i18n.get_timezone_name(tz) == 'Pacific Time'

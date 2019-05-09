@@ -16,21 +16,21 @@ from nagare.i18n import set_locale, Locale, NegotiatedLocale
 
 class I18NLocale(plugin.Plugin):
     LOAD_PRIORITY = 80
+    CONFIG_SPEC = {'dirname': 'string(default=None)'}
     LOCALE_FACTORY = Locale
 
-    CONFIG_SPEC = {'dirname': 'string(default=None)'}
+    def __init__(self, name, dist, dirname=None, i18n_service=None, services_service=None, **config):
+        services_service(super(I18NLocale, self).__init__, name, dist, **config)
 
-    def __init__(self, name, dist, dirname=None, i18n_service=None, **config):
-        super(I18NLocale, self).__init__(name, dist)
-
-        self.dirname = dirname or i18n_service.output_directory
+        self.config = config
+        self.config['dirname'] = dirname or i18n_service.output_directory
 
     @staticmethod
     def set_locale(locale):
         set_locale(locale)
 
     def create_locale(self, **config):
-        return self.LOCALE_FACTORY(dirname=self.dirname, **dict(self.plugin_config, **config))
+        return self.LOCALE_FACTORY(**dict(self.config, **config))
 
     def handle_request(self, chain, **params):
         locale = self.get_locale(**params)
@@ -47,7 +47,7 @@ class I18NLocale(plugin.Plugin):
 class I18NPredefinedLocale(I18NLocale):
     CONFIG_SPEC = dict(
         I18NLocale.CONFIG_SPEC,
-        language='string(default="en")',
+        language='string',
         territory='string(default=None)',
         script='string(default=None)',
         variant='string(default=None)',
@@ -71,8 +71,8 @@ class I18NPredefinedLocale(I18NLocale):
 class I18NNegociatedLocale(I18NLocale):
     CONFIG_SPEC = dict(
         I18NLocale.CONFIG_SPEC,
-        locales='string_list(default=list())',
-        default_locale='string(default="")',
+        locales='string_list',
+        default_locale='string',
         dirname='string(default=None)',
         domain='string(default=None)',
         timezone='string(default=None)',
