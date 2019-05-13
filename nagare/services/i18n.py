@@ -52,41 +52,37 @@ class I18NService(plugin.Plugin):
 
         cls.CONFIG_SPEC[command_name] = config_spec
 
-    def __init__(self, name, dist, watch, reloader_service=None, **config_commands):
-        super(I18NService, self).__init__(name, dist)
-
-        self.reloader = reloader_service if watch else None
-        self.config_commands = config_commands
-
     @property
     def input_file(self):
-        return self.config_commands['extract']['output_file']
+        return self.plugin_config['extract']['output_file']
 
     @property
     def input_directory(self):
-        return self.config_commands['init']['output_dir'] or os.path.dirname(self.input_file)
+        return self.plugin_config['init']['output_dir'] or os.path.dirname(self.input_file)
 
     @property
     def output_directory(self):
-        return self.config_commands['compile']['directory'] or self.input_directory
+        return self.plugin_config['compile']['directory'] or self.input_directory
 
-    def handle_start(self, app):
-        if (self.reloader is not None) and self.input_directory and os.path.isdir(self.input_directory):
+    def handle_start(self, app, reloader_service=None):
+        watch = self.plugin_config['watch']
+
+        if watch and (reloader_service is not None) and self.input_directory and os.path.isdir(self.input_directory):
             for root, dirs, files in os.walk(self.input_directory):
                 for filename in files:
                     if filename.endswith('.po'):
                         filename = os.path.join(root, filename)
-                        self.reloader.watch_file(filename, on_change, o=self, method='compile_on_change')
+                        reloader_service.watch_file(filename, on_change, o=self, method='compile_on_change')
 
-            self.reloader.watch_file(self.input_file, on_change, o=self, method='update_on_change')
+            reloader_service.watch_file(self.input_file, on_change, o=self, method='update_on_change')
 
     def update_on_change(self, path):
         i18n.Update().run(self)
-        return False
+        return True
 
     def compile_on_change(self, path):
         i18n.Compile().run(self)
-        return True
+        return False
 
 
 for cls in (i18n.Extract, i18n.Init, i18n.Update, i18n.Compile):
