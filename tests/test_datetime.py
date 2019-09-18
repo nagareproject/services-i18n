@@ -96,7 +96,7 @@ def test_format_skeleton():
 
     set_locale(Locale('fi'))
     assert i18n.format_skeleton('yMMd', t) == '1.4.2007'
-    with pytest.raises(KeyError, message='yMMd'):
+    with pytest.raises(KeyError, match='yMMd'):
         i18n.format_skeleton('yMMd', t, fuzzy=False)
 
 

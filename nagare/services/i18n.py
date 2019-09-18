@@ -16,7 +16,7 @@ from nagare.admin import i18n
 from nagare.services import plugin
 
 
-def on_change(reloader, path, o, method):
+def on_change(event, path, o, method):
     return getattr(o, method)(path)
 
 

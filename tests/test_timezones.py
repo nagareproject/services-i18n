@@ -141,7 +141,7 @@ def test_format_time_time_fr1():
     t = datetime.time(15, 30)
 
     assert i18n.format_time(t, format='full') == u'15:30:00 Temps universel coordonné'
-    assert i18n.format_time(t, format='long') == '15:30:00 UTC'
+    assert i18n.format_time(t, format='long') == '15:30:00 TU'
     assert i18n.format_time(t, format='medium') == '15:30:00'
     assert i18n.format_time(t) == '15:30:00'
     assert i18n.format_time(t, format='short') == '15:30'
@@ -165,7 +165,7 @@ def test_format_time_time_fr3():
     t = datetime.time(15, 30, tzinfo=pytz.timezone('Pacific/Pitcairn'))
 
     assert i18n.format_time(t, format='full') == u'15:30:00 Temps universel coordonné'
-    assert i18n.format_time(t, format='long') == '15:30:00 UTC'
+    assert i18n.format_time(t, format='long') == '15:30:00 TU'
     assert i18n.format_time(t, format='medium') == '15:30:00'
     assert i18n.format_time(t) == '15:30:00'
     assert i18n.format_time(t, format='short') == '15:30'
@@ -211,7 +211,7 @@ def test_format_time_datetime_fr1():
     d = datetime.datetime(2007, 4, 1, 15, 30)
 
     assert i18n.format_time(d, format='full') == u'15:30:00 Temps universel coordonné'
-    assert i18n.format_time(d, format='long') == '15:30:00 UTC'
+    assert i18n.format_time(d, format='long') == '15:30:00 TU'
     assert i18n.format_time(d, format='medium') == '15:30:00'
     assert i18n.format_time(d) == '15:30:00'
     assert i18n.format_time(d, format='short') == '15:30'
@@ -248,7 +248,7 @@ def test_format_time_datetime_fr4():
     d = tz.localize(datetime.datetime(2007, 4, 1, 15, 30))
 
     assert i18n.format_time(d, format='full') == u'23:30:00 Temps universel coordonné'
-    assert i18n.format_time(d, format='long') == '23:30:00 UTC'
+    assert i18n.format_time(d, format='long') == '23:30:00 TU'
     assert i18n.format_time(d, format='medium') == '23:30:00'
     assert i18n.format_time(d) == '23:30:00'
     assert i18n.format_time(d, format='short') == '23:30'
