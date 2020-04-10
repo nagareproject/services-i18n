@@ -32,7 +32,7 @@ setup(
     zip_safe=False,
     setup_requires=['setuptools_scm'],
     use_scm_version=True,
-    install_requires=['Babel>=2.5.0', 'pytz', 'nagare-services'],
+    install_requires=['Babel>=2.5.0', 'pytz', 'nagare-services', 'nagare-server'],
     entry_points='''
         [nagare.commands]
         i18n = nagare.admin.i18n:Commands

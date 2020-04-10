@@ -20,7 +20,7 @@ class I18NLocale(plugin.Plugin):
     LOCALE_FACTORY = Locale
 
     def __init__(self, name, dist, dirname=None, i18n_service=None, services_service=None, **config):
-        services_service(super(I18NLocale, self).__init__, name, dist, **config)
+        services_service(super(I18NLocale, self).__init__, name, dist, dirname=dirname, **config)
 
         self.config = config
         self.config['dirname'] = dirname or i18n_service.output_directory
