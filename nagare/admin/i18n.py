@@ -82,7 +82,7 @@ class Extract(Command):
     def create_command(cls, **defaults):
         return super(Extract, cls).create_command(
             input_dirs='$root',
-            output_file='$root/data/locale/messages.pot'
+            output_file='$data/locale/messages.pot'
         )
 
     def run_command(self, command, output_file, keywords, **config):

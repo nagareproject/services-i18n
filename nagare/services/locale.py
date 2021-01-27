@@ -16,7 +16,7 @@ from nagare.i18n import set_locale, Locale, NegotiatedLocale
 
 class I18NLocale(plugin.Plugin):
     LOAD_PRIORITY = 80
-    CONFIG_SPEC = {'dirname': 'string(default=None)'}
+    CONFIG_SPEC = dict(plugin.Plugin.CONFIG_SPEC, dirname='string(default=None)')
     LOCALE_FACTORY = Locale
 
     def __init__(self, name, dist, dirname=None, i18n_service=None, services_service=None, **config):

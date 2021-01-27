@@ -22,7 +22,7 @@ def on_change(event, path, o, method):
 
 class I18NService(plugin.Plugin):
     LOAD_PRIORITY = 70
-    CONFIG_SPEC = {'watch': 'boolean(default=True)'}
+    CONFIG_SPEC = dict(plugin.Plugin.CONFIG_SPEC, watch='boolean(default=True)')
 
     @classmethod
     def create_config_spec(cls, command_name, command):
