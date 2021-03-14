@@ -11,6 +11,7 @@
 """
 
 import datetime
+from operator import itemgetter
 
 import pytz
 from nagare import local
@@ -1021,8 +1022,8 @@ class NegotiatedLocale(Locale):
             value is used
         """
         locale = negotiate_locale(
-            request.accept_language,
-            map('-'.join, locales),
+            map(itemgetter(0), sorted(request.accept_language.parsed, key=itemgetter(1), reverse=True)),
+            ['-'.join(locale).rstrip('-') for locale in locales],
             '-'
         )
 
