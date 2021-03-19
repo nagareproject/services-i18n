@@ -1022,7 +1022,7 @@ class NegotiatedLocale(Locale):
             value is used
         """
         locale = negotiate_locale(
-            map(itemgetter(0), sorted(request.accept_language.parsed, key=itemgetter(1), reverse=True)),
+            map(itemgetter(0), sorted(request.accept_language.parsed or (), key=itemgetter(1), reverse=True)),
             ['-'.join(locale).rstrip('-') for locale in locales],
             '-'
         )
