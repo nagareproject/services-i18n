@@ -21,7 +21,7 @@ class Commands(command.Commands):
 
 class Locales(command.Command):
     DESC = 'display all the locales code'
-    WITH_CONFIG_FILENAME = WITH_STARTED_SERVICES = False
+    WITH_CONFIG_FILENAME = False
 
     @staticmethod
     def run():

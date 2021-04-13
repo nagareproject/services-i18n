@@ -74,7 +74,8 @@ class I18NService(plugin.Plugin):
                         filename = os.path.join(root, filename)
                         reloader_service.watch_file(filename, on_change, o=self, method='compile_on_change')
 
-            reloader_service.watch_file(self.input_file, on_change, o=self, method='update_on_change')
+            if os.path.isfile(self.input_file):
+                reloader_service.watch_file(self.input_file, on_change, o=self, method='update_on_change')
 
     def update_on_change(self, path):
         i18n.Update().run(self)
