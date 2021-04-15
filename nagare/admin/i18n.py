@@ -101,6 +101,7 @@ class Extract(Command):
 class Init(Command):
 
     def set_arguments(self, parser):
+        parser.add_argument('-d', '--domain', dest='forced_domain')
         parser.add_argument('locale')
         super(Init, self).set_arguments(parser)
 
@@ -108,13 +109,14 @@ class Init(Command):
     def create_command(cls, **defaults):
         return super(Init, cls).create_command(input_file='${i18n.extract.output_file}', output_dir='')
 
-    def run_command(self, command, input_file, output_dir, **config):
+    def run_command(self, command, forced_domain, input_file, output_dir, domain, **config):
         output_dir = output_dir or os.path.dirname(input_file)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
         return super(Init, self).run_command(
             command,
+            domain=forced_domain or domain,
             input_file=input_file,
             output_dir=output_dir,
             **config
@@ -122,6 +124,11 @@ class Init(Command):
 
 
 class Update(Command):
+
+    def set_arguments(self, parser):
+        parser.add_argument('-d', '--domain', dest='forced_domain')
+        parser.add_argument('-l', '--locale')
+        super(Update, self).set_arguments(parser)
 
     @classmethod
     def create_command(cls, **defaults):
@@ -131,13 +138,14 @@ class Update(Command):
             output_dir=''
         )
 
-    def run_command(self, command, input_file, output_dir, **config):
+    def run_command(self, command, forced_domain, input_file, output_dir, domain, **config):
         output_dir = output_dir or os.path.dirname(input_file)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
         return super(Update, self).run_command(
             command,
+            domain=forced_domain or domain,
             input_file=input_file,
             output_dir=output_dir,
             **config
@@ -145,6 +153,11 @@ class Update(Command):
 
 
 class Compile(Command):
+
+    def set_arguments(self, parser):
+        parser.add_argument('-d', '--domain', dest='forced_domain')
+        parser.add_argument('-l', '--locale')
+        super(Compile, self).set_arguments(parser)
 
     @classmethod
     def create_command(cls, **defaults):
@@ -154,9 +167,14 @@ class Compile(Command):
             domain='${i18n.init.domain}'
         )
 
-    def run_command(self, command, input_file, directory, **config):
+    def run_command(self, command, forced_domain, input_file, directory, domain, **config):
         directory = directory or os.path.dirname(input_file)
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        return super(Compile, self).run_command(command, directory=directory, **config)
+        return super(Compile, self).run_command(
+            command,
+            domain=forced_domain or domain,
+            directory=directory,
+            **config
+        )
