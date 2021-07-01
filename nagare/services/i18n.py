@@ -43,10 +43,11 @@ class I18NService(plugin.Plugin):
                 default = getattr(command, keyword)
                 choices = command.option_choices.get(name)
 
-                args = 'default=' + ('None' if default is None else ('"%s"' % default))
+                default = 'default=' + ('None' if default is None else ('"%s"' % default))
                 if choices:
-                    args += ', option(' + ', '.join('"%s"' % choice for choice in choices) + ')'
-                spec = 'string(' + args + ')'
+                    spec = 'option(' + ', '.join('"%s"' % choice for choice in choices) + ', ' + default + ')'
+                else:
+                    spec = 'string(' + default + ')'
 
             config_spec[keyword] = spec
 
