@@ -107,7 +107,7 @@ class Init(Command):
 
     @classmethod
     def create_command(cls, **defaults):
-        return super(Init, cls).create_command(input_file='${i18n.extract.output_file}', output_dir='')
+        return super(Init, cls).create_command(input_file='${/i18n/extract/output_file}', output_dir='')
 
     def run_command(self, command, forced_domain, input_file, output_dir, domain, **config):
         output_dir = output_dir or os.path.dirname(input_file)
@@ -133,8 +133,8 @@ class Update(Command):
     @classmethod
     def create_command(cls, **defaults):
         return super(Update, cls).create_command(
-            input_file='${i18n.extract.output_file}',
-            domain='${i18n.init.domain}',
+            input_file='${/i18n/extract/output_file}',
+            domain='${/i18n/init/domain}',
             output_dir=''
         )
 
@@ -162,9 +162,9 @@ class Compile(Command):
     @classmethod
     def create_command(cls, **defaults):
         return super(Compile, cls).create_command(
-            input_file='${i18n.extract.output_file}',
-            directory='${i18n.init.output_dir}',
-            domain='${i18n.init.domain}'
+            input_file='${/i18n/extract/output_file}',
+            directory='${/i18n/init/output_dir}',
+            domain='${/i18n/init/domain}'
         )
 
     def run_command(self, command, forced_domain, input_file, directory, domain, **config):
