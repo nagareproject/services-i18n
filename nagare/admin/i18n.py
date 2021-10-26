@@ -23,6 +23,9 @@ class Locales(command.Command):
     DESC = 'display all the locales code'
     WITH_CONFIG_FILENAME = False
 
+    def _create_services(self, *args, **kw):
+        return self.SERVICES_FACTORY()
+
     @staticmethod
     def run():
         identifiers = localedata.locale_identifiers()
