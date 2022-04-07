@@ -35,22 +35,26 @@ class I18NService(plugin.Plugin):
             if name == getattr(command, 'as_args'):
                 continue
 
-            if name in command.boolean_options:
-                spec = 'boolean(default=False)'
-            elif name in command.multiple_value_options:
-                spec = 'string_list(default=list())'
+            if (command_name == 'extract') and (keyword == 'input_dirs'):
+                spec = 'string_list(default=list("{}"))'.format(getattr(command, keyword))
             else:
-                default = getattr(command, keyword)
-                choices = command.option_choices.get(name)
-
-                default = 'default=' + ('None' if default is None else ('"%s"' % default))
-                if choices:
-                    spec = 'option(' + ', '.join('"%s"' % choice for choice in choices) + ', ' + default + ')'
+                if name in command.boolean_options:
+                    spec = 'boolean(default=False)'
+                elif name in command.multiple_value_options:
+                    spec = 'string_list(default=list())'
                 else:
-                    spec = 'string(' + default + ')'
+                    default = getattr(command, keyword)
+                    choices = command.option_choices.get(name)
+
+                    default = 'default=' + ('None' if default is None else ('"%s"' % default))
+                    if choices:
+                        spec = 'option(' + ', '.join('"%s"' % choice for choice in choices) + ', ' + default + ')'
+                    else:
+                        spec = 'string(' + default + ')'
 
             config_spec[keyword] = spec
 
+        config_spec['__many__'] = config_spec.copy()
         cls.CONFIG_SPEC[command_name] = config_spec
 
     @property
