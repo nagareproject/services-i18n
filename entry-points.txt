@@ -1,0 +1,12 @@
+[nagare.commands]
+i18n = nagare.admin.i18n:Commands
+
+[nagare.commands.i18n]
+locales = nagare.admin.i18n:Locales
+extract = nagare.admin.i18n:Extract
+init = nagare.admin.i18n:Init
+update = nagare.admin.i18n:Update
+compile = nagare.admin.i18n:Compile
+
+[nagare.services]
+i18n = nagare.services.i18n:I18NService

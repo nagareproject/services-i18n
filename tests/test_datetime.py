@@ -1,7 +1,7 @@
 # Encoding: utf-8
 
 # --
-# Copyright (c) 2008-2022 Net-ng.
+# Copyright (c) 2008-2023 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -102,7 +102,10 @@ def test_format_skeleton():
 
 def test_format_interval():
     set_locale(Locale('fi'))
-    assert i18n.format_interval(datetime.datetime(2016, 1, 15), datetime.datetime(2016, 1, 17), 'yMd') == u'15.\u201317.1.2016'
+    assert (
+        i18n.format_interval(datetime.datetime(2016, 1, 15), datetime.datetime(2016, 1, 17), 'yMd')
+        == u'15.\u201317.1.2016'
+    )
 
     set_locale(Locale('en', 'GB'))
     assert i18n.format_interval(datetime.time(12, 12), datetime.time(16, 16), 'Hm') == u'12:12\u201316:16'
@@ -115,13 +118,19 @@ def test_format_interval():
     assert i18n.format_interval(datetime.time(16, 18), datetime.time(16, 18), 'Hm') == '16:18'
 
     set_locale(Locale('ja'))
-    assert i18n.format_interval(datetime.date(2015, 1, 1), datetime.date(2017, 1, 1), 'wzq') == u'2015/01/01\uff5e2017/01/01'
+    assert (
+        i18n.format_interval(datetime.date(2015, 1, 1), datetime.date(2017, 1, 1), 'wzq')
+        == u'2015/01/01\uff5e2017/01/01'
+    )
 
     set_locale(Locale('ja'))
     assert i18n.format_interval(datetime.time(16, 18), datetime.time(16, 24), 'xxx') == u'16:18:00\uff5e16:24:00'
 
     set_locale(Locale('de'))
-    assert i18n.format_interval(datetime.date(2016, 1, 15), datetime.date(2016, 1, 17), 'xxx') == u'15.01.2016 \u2013 17.01.2016'
+    assert (
+        i18n.format_interval(datetime.date(2016, 1, 15), datetime.date(2016, 1, 17), 'xxx')
+        == u'15.01.2016 \u2013 17.01.2016'
+    )
 
 
 def test_get_timezone_gmt():
@@ -187,7 +196,7 @@ def test_get_day_names():
     assert i18n.get_day_names('wide')[1] == 'Tuesday'
 
     set_locale(Locale('es'))
-    assert i18n.get_day_names('abbreviated')[1] == 'mar.'
+    assert i18n.get_day_names('abbreviated')[1] == 'mar'
 
     set_locale(Locale('de', 'DE'))
     assert i18n.get_day_names('narrow', context='stand-alone')[1] == 'D'
@@ -198,7 +207,7 @@ def test_get_month_names():
     assert i18n.get_month_names('wide')[1] == 'January'
 
     set_locale(Locale('es'))
-    assert i18n.get_month_names('abbreviated')[1] == 'ene.'
+    assert i18n.get_month_names('abbreviated')[1] == 'ene'
 
     set_locale(Locale('de', 'DE'))
     assert i18n.get_month_names('narrow', context='stand-alone')[1] == 'J'

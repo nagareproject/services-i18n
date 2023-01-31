@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2022 Net-ng.
+# Copyright (c) 2008-2023 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -7,11 +7,10 @@
 # this distribution.
 # --
 
-"""Internationalization service
-"""
+"""Internationalization service."""
 
+from nagare.i18n import Locale, NegotiatedLocale, set_locale
 from nagare.services import plugin
-from nagare.i18n import set_locale, Locale, NegotiatedLocale
 
 
 class I18NLocale(plugin.Plugin):
@@ -41,6 +40,7 @@ class I18NLocale(plugin.Plugin):
     def get_locale(self, **params):
         raise NotImplementedError()
 
+
 # -----------------------------------------------------------------------------
 
 
@@ -54,7 +54,7 @@ class I18NPredefinedLocale(I18NLocale):
         dirname='string(default=None)',
         domain='string(default=None)',
         timezone='string(default=None)',
-        default_timezone='string(default=None)'
+        default_timezone='string(default=None)',
     )
 
     def __init__(self, name, dist, services_service, **config):
@@ -64,6 +64,7 @@ class I18NPredefinedLocale(I18NLocale):
 
     def get_locale(self, **params):
         return self.locale
+
 
 # -----------------------------------------------------------------------------
 
@@ -76,25 +77,21 @@ class I18NNegociatedLocale(I18NLocale):
         dirname='string(default=None)',
         domain='string(default=None)',
         timezone='string(default=None)',
-        default_timezone='string(default=None)'
+        default_timezone='string(default=None)',
     )
     LOCALE_FACTORY = NegotiatedLocale
 
-    def __init__(
-        self,
-        name, dist,
-        locales=(), default_locale='',
-        services_service=None,
-        **config
-    ):
+    def __init__(self, name, dist, locales=(), default_locale='', services_service=None, **config):
         locales = [(locale + '_').split('_')[:2] for locale in locales]
         default_locale = (default_locale + '_').split('_')[:2]
 
         services_service(
             super(I18NNegociatedLocale, self).__init__,
-            name, dist,
-            locales=locales, default_locale=tuple(default_locale),
-            **config
+            name,
+            dist,
+            locales=locales,
+            default_locale=tuple(default_locale),
+            **config,
         )
 
     def get_locale(self, request, **params):

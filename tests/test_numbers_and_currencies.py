@@ -1,7 +1,7 @@
 # Encoding: utf-8
 
 # --
-# Copyright (c) 2008-2022 Net-ng.
+# Copyright (c) 2008-2023 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -158,4 +158,7 @@ def test_get_territory_currencies():
 
     set_locale(Locale('en', 'US'))
     assert i18n.get_territory_currencies() == ['USD']
-    assert i18n.get_territory_currencies(tender=False, non_tender=True, start_date=datetime.date(2014, 1, 1)) == ['USN', 'USS']
+    assert i18n.get_territory_currencies(tender=False, non_tender=True, start_date=datetime.date(2014, 1, 1)) == [
+        'USN',
+        'USS',
+    ]

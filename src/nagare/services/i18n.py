@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2022 Net-ng.
+# Copyright (c) 2008-2023 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -7,8 +7,7 @@
 # this distribution.
 # --
 
-"""Internationalization service
-"""
+"""Internationalization service."""
 
 import os
 
@@ -28,7 +27,7 @@ class I18NService(plugin.Plugin):
     def create_config_spec(cls, command_name, command):
         config_spec = {}
 
-        for name, _, _ in command.user_options:
+        for name, _, description in command.user_options:
             name = name.strip('=')
             keyword = name.replace('-', '_')
 
@@ -36,21 +35,23 @@ class I18NService(plugin.Plugin):
                 continue
 
             if (command_name == 'extract') and (keyword == 'input_dirs'):
-                spec = 'string_list(default=list("{}"))'.format(getattr(command, keyword))
+                spec = 'string_list(default=list("{}")'.format(getattr(command, keyword))
             else:
                 if name in command.boolean_options:
-                    spec = 'boolean(default=False)'
+                    spec = 'boolean(default=False'
                 elif name in command.multiple_value_options:
-                    spec = 'string_list(default=list())'
+                    spec = 'string_list(default=list()'
                 else:
                     default = getattr(command, keyword)
                     choices = command.option_choices.get(name)
 
                     default = 'default=' + ('None' if default is None else ('"%s"' % default))
                     if choices:
-                        spec = 'option(' + ', '.join('"%s"' % choice for choice in choices) + ', ' + default + ')'
+                        spec = 'option(' + ', '.join('"%s"' % choice for choice in choices) + ', ' + default
                     else:
-                        spec = 'string(' + default + ')'
+                        spec = 'string(' + default
+
+            spec += (', help="{}"'.format(description.replace('"', r'\"')) if description else '') + ')'
 
             config_spec[keyword] = spec
 

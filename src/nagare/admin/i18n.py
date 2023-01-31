@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2022 Net-ng.
+# Copyright (c) 2008-2023 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -9,10 +9,10 @@
 
 import os
 
-from nagare.admin import command
-from nagare.server.reference import is_reference, load_object
 from babel import Locale, localedata
 from babel.messages.frontend import CommandLineInterface
+from nagare.admin import command
+from nagare.server.reference import is_reference, load_object
 
 
 class Commands(command.Commands):
@@ -36,7 +36,6 @@ class Locales(command.Command):
 
 
 class Command(command.Command):
-
     @classmethod
     def create_command(cls, **defaults):
         command_name = cls.__name__.lower()
@@ -76,12 +75,10 @@ class Command(command.Command):
 
 
 class Extract(Command):
-
     @classmethod
     def create_command(cls, **defaults):
         return super(Extract, cls).create_command(
-            input_dirs='$root',
-            output_file='$data/locale/messages.pot'
+            project='$app_name', version='$app_version', input_dirs='$root', output_file='$data/locale/messages.pot'
         )
 
     def run_command(self, command, input_dirs, output_file, keywords, **config):
@@ -97,16 +94,11 @@ class Extract(Command):
         )
 
         return super(Extract, self).run_command(
-            command,
-            input_dirs=input_dirs,
-            output_file=output_file,
-            keywords=keywords,
-            **config
+            command, input_dirs=input_dirs, output_file=output_file, keywords=keywords, **config
         )
 
 
 class Init(Command):
-
     def set_arguments(self, parser):
         parser.add_argument('locale')
         super(Init, self).set_arguments(parser)
@@ -120,16 +112,10 @@ class Init(Command):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        return super(Init, self).run_command(
-            command,
-            input_file=input_file,
-            output_dir=output_dir,
-            **config
-        )
+        return super(Init, self).run_command(command, input_file=input_file, output_dir=output_dir, **config)
 
 
 class Update(Command):
-
     def set_arguments(self, parser):
         parser.add_argument('-l', '--locale')
         super(Update, self).set_arguments(parser)
@@ -137,9 +123,7 @@ class Update(Command):
     @classmethod
     def create_command(cls, **defaults):
         return super(Update, cls).create_command(
-            input_file='${/i18n/extract/output_file}',
-            domain='${/i18n/init/domain}',
-            output_dir=''
+            input_file='${/i18n/extract/output_file}', domain='${/i18n/init/domain}', output_dir=''
         )
 
     def run_command(self, command, input_file, output_dir, **config):
@@ -147,16 +131,10 @@ class Update(Command):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        return super(Update, self).run_command(
-            command,
-            input_file=input_file,
-            output_dir=output_dir,
-            **config
-        )
+        return super(Update, self).run_command(command, input_file=input_file, output_dir=output_dir, **config)
 
 
 class Compile(Command):
-
     def set_arguments(self, parser):
         parser.add_argument('-l', '--locale')
         super(Compile, self).set_arguments(parser)
@@ -166,7 +144,7 @@ class Compile(Command):
         return super(Compile, cls).create_command(
             input_file='${/i18n/extract/output_file}',
             directory='${/i18n/init/output_dir}',
-            domain='${/i18n/init/domain}'
+            domain='${/i18n/init/domain}',
         )
 
     def run_command(self, command, input_file, directory, **config):
@@ -174,8 +152,4 @@ class Compile(Command):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        return super(Compile, self).run_command(
-            command,
-            directory=directory,
-            **config
-        )
+        return super(Compile, self).run_command(command, directory=directory, **config)

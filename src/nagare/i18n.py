@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2022 Net-ng.
+# Copyright (c) 2008-2023 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -7,16 +7,15 @@
 # this distribution.
 # --
 
-"""Internationalization service
-"""
+"""Internationalization service."""
 
 import datetime
 from operator import itemgetter
 
-import pytz
+from babel import Locale as CoreLocale
+from babel import core, dates, languages, lists, negotiate_locale, numbers, support
 from nagare import local
-from babel import dates, numbers, languages, lists, support
-from babel import core, negotiate_locale, Locale as CoreLocale
+import pytz
 
 
 def get_locale():
@@ -28,11 +27,10 @@ def set_locale(locale):
 
 
 class LazyProxy(support.LazyProxy):
-    """Picklable ``babel.support.LazyProxy`` objects
-    """
+    """Picklable ``babel.support.LazyProxy`` objects."""
+
     def __init__(self, func, *args, **kw):
-        """Always evaluate, without any cache
-        """
+        """Always evaluate, without any cache."""
         super(LazyProxy, self).__init__(func, *args, enable_cache=True, **kw)
 
     def __getstate__(self):
@@ -40,6 +38,7 @@ class LazyProxy(support.LazyProxy):
 
     def __setstate__(self, attrs):
         self.__init__(attrs[0], *attrs[1], **attrs[2])
+
 
 # Service API
 # -----------
@@ -51,6 +50,8 @@ def gettext(msg, domain=None, **kw):
 
 def ugettext(msg, domain=None, **kw):
     return get_locale().ugettext(msg, domain, **kw)
+
+
 _ = ugettext  # noqa: E305
 
 
@@ -60,6 +61,8 @@ def ngettext(singular, plural, n, domain=None, **kw):
 
 def ungettext(singular, plural, n, domain=None, **kw):
     return get_locale().ungettext(singular, plural, n, domain, **kw)
+
+
 _N = ungettext  # noqa: E305
 
 
@@ -69,6 +72,8 @@ def lazy_gettext(msg, domain=None, **kw):
 
 def lazy_ugettext(msg, domain=None, **kw):
     return LazyProxy(ugettext, msg, domain, **kw)
+
+
 _L = lazy_ugettext  # noqa: E305
 
 
@@ -78,6 +83,8 @@ def lazy_ngettext(singular, plural, n, domain=None, **kw):
 
 def lazy_ungettext(singular, plural, n, domain=None, **kw):
     return LazyProxy(ungettext, singular, plural, n, domain, **kw)
+
+
 _LN = lazy_ungettext  # noqa: E305
 
 
@@ -101,7 +108,7 @@ def format_time(t=None, format='medium'):
     return get_locale().format_time(t, format)
 
 
-def format_timedelta(delta, granularity='second', threshold=.85, add_direction=False, format='long'):
+def format_timedelta(delta, granularity='second', threshold=0.85, add_direction=False, format='long'):
     return get_locale().format_timedelta(delta, granularity, threshold, add_direction, format)
 
 
@@ -194,8 +201,7 @@ def format_decimal(number, format=None, decimal_quantization=True):
 
 
 def format_currency(
-    number, currency, format=None, currency_digits=True,
-    format_type='standard', decimal_quantization=True
+    number, currency, format=None, currency_digits=True, format_type='standard', decimal_quantization=True
 ):
     return get_locale().format_currency(number, currency, format, currency_digits, format_type, decimal_quantization)
 
@@ -244,12 +250,9 @@ def get_minus_sign_symbol():
     return get_locale().get_minus_sign_symbol()
 
 
-def get_territory_currencies(
-        start_date=None, end_date=None,
-        tender=True, non_tender=False,
-        include_details=False
-):
+def get_territory_currencies(start_date=None, end_date=None, tender=True, non_tender=False, include_details=False):
     return get_locale().get_territory_currencies(start_date, end_date, tender, non_tender, include_details)
+
 
 # -----------------------------------------------------------------------------
 
@@ -261,8 +264,8 @@ _translations_cache = {}  # Already loaded translation objects
 
 
 class DummyTranslation(object):
-    """Identity translation
-    """
+    """Identity translation."""
+
     @staticmethod
     def gettext(msg):
         return msg
@@ -279,12 +282,16 @@ class DummyTranslation(object):
 class Locale(CoreLocale):
     def __init__(
         self,
-        language='en', territory=None, script=None, variant=None,
-        dirname=None, domain=None,
-        timezone=None, default_timezone=None
+        language='en',
+        territory=None,
+        script=None,
+        variant=None,
+        dirname=None,
+        domain=None,
+        timezone=None,
+        default_timezone=None,
     ):
-        """
-        A locale
+        """A locale.
 
         In:
           - ``language`` -- the language code (i.e 'en'),
@@ -326,7 +333,7 @@ class Locale(CoreLocale):
         self.zone_formats['region'] = '%s'
 
     def add_translation_directory(self, dirname, domain=None):
-        """Associate a directory to a translation domain
+        """Associate a directory to a translation domain.
 
         In:
           - ``dirname`` -- the directory
@@ -335,7 +342,7 @@ class Locale(CoreLocale):
         self.translation_directories[domain] = dirname
 
     def has_translation_directory(self, domain=None):
-        """Test if a domain has an associated directory
+        """Test if a domain has an associated directory.
 
         In:
           - ``domain`` -- the translation domain
@@ -346,7 +353,7 @@ class Locale(CoreLocale):
         return domain in self.translation_directories
 
     def get_translation_directory(self, domain=None):
-        """Return the directory associated to the domain
+        """Return the directory associated to the domain.
 
         In:
           - ``domain`` -- the translation domain
@@ -354,7 +361,7 @@ class Locale(CoreLocale):
         return self.translation_directories.get(domain)
 
     def _get_translation(self, domain=None):
-        """Load the translation object, if not already loaded
+        """Load the translation object, if not already loaded.
 
         In:
           - ``domain`` -- translation domain
@@ -377,7 +384,7 @@ class Locale(CoreLocale):
         return translation
 
     def gettext(self, msg, domain=None, **kw):
-        """Return the localized translation of a message
+        """Return the localized translation of a message.
 
         In:
           - ``msg`` -- message to translate
@@ -392,7 +399,7 @@ class Locale(CoreLocale):
         return msg % kw if kw else msg
 
     def ugettext(self, msg, domain=None, **kw):
-        """Return the localized translation of a message
+        """Return the localized translation of a message.
 
         In:
           - ``msg`` -- message to translate
@@ -404,10 +411,11 @@ class Locale(CoreLocale):
         """
         msg = self._get_translation(domain).ugettext(msg)
         return msg % kw if kw else msg
+
     _ = ugettext
 
     def ngettext(self, singular, plural, n, domain=None, **kw):
-        """Return the plural-forms localized translation of a message
+        """Return the plural-forms localized translation of a message.
 
         If a translation is found, apply the ``plural`` formula to ``n``, and
         return the resulting translation. If no translation is found, return
@@ -428,7 +436,7 @@ class Locale(CoreLocale):
         return msg % kw if kw else msg
 
     def ungettext(self, singular, plural, n, domain=None, **kw):
-        """Return the plural-forms localized translation of a message
+        """Return the plural-forms localized translation of a message.
 
         If a translation is found, apply the ``plural`` formula to ``n``, and
         return the resulting translation. If no translation is found, return
@@ -447,10 +455,11 @@ class Locale(CoreLocale):
         """
         msg = self._get_translation(domain).ungettext(singular, plural, n)
         return msg % kw if kw else msg
+
     _N = ungettext
 
     def lazy_gettext(self, msg, domain=None, **kw):
-        """Return the lazy localized translation of a message
+        """Return the lazy localized translation of a message.
 
         In:
           - ``msg`` -- message to translate
@@ -464,7 +473,7 @@ class Locale(CoreLocale):
         return LazyProxy(self.gettext, msg, domain, **kw)
 
     def lazy_ugettext(self, msg, domain=None, **kw):
-        """Return the lazy localized translation of a message
+        """Return the lazy localized translation of a message.
 
         In:
           - ``msg`` -- message to translate
@@ -475,10 +484,11 @@ class Locale(CoreLocale):
           - the lazy localized translation, as an unicode string
         """
         return LazyProxy(self.ugettext, msg, domain, **kw)
+
     _L = lazy_ugettext
 
     def lazy_ngettext(self, singular, plural, n, domain=None, **kw):
-        """Return the lazy plural-forms localized translation of a message
+        """Return the lazy plural-forms localized translation of a message.
 
         If a translation is found, apply the ``plural`` formula to ``n``, and
         return the resulting translation. If no translation is found, return
@@ -498,7 +508,7 @@ class Locale(CoreLocale):
         return LazyProxy(self.ngettext, singular, plural, n, domain, **kw)
 
     def lazy_ungettext(self, singular, plural, n, domain=None, **kw):
-        """Return the lazy plural-forms localized translation of a message
+        """Return the lazy plural-forms localized translation of a message.
 
         If a translation is found, apply the ``plural`` formula to ``n``, and
         return the resulting translation. If no translation is found, return
@@ -515,10 +525,11 @@ class Locale(CoreLocale):
           - the lazy localized translation, as an unicode string
         """
         return LazyProxy(self.ungettext, singular, plural, n, domain, **kw)
+
     _LN = lazy_ungettext
 
     def to_timezone(self, dt):
-        """Return a localized datetime object
+        """Return a localized datetime object.
 
         In:
           - ``dt`` -- ``datetime`` object
@@ -535,7 +546,7 @@ class Locale(CoreLocale):
         return dt.astimezone(self.tzinfo)
 
     def to_utc(self, dt):
-        """Return a UTC datetime object
+        """Return a UTC datetime object.
 
         In:
           - ``dt`` -- ``datetime`` object
@@ -552,7 +563,7 @@ class Locale(CoreLocale):
     # ======================
 
     def format_datetime(self, dt=None, format='medium'):
-        """Return a date formatted according to the given pattern
+        """Return a date formatted according to the given pattern.
 
         In:
           - ``dt`` -- ``datetime`` object; if ``None``, the current date and time is used
@@ -566,7 +577,7 @@ class Locale(CoreLocale):
         return dates.format_datetime(dt, format, locale=self, tzinfo=self.tzinfo)
 
     def format_date(self, d=None, format='medium'):
-        """Return a date formatted according to the given pattern
+        """Return a date formatted according to the given pattern.
 
         In:
           - ``d`` -- ``date`` or ``datetime`` object; if ``None``, the current date is used
@@ -578,7 +589,7 @@ class Locale(CoreLocale):
         return dates.format_date(d, format, self)
 
     def format_time(self, t=None, format='medium'):
-        """Return a time formatted according to the given pattern
+        """Return a time formatted according to the given pattern.
 
         In:
           - ``t`` --  ``time`` or ``datetime`` object; if `None`, the current time in UTC is used
@@ -596,8 +607,8 @@ class Locale(CoreLocale):
 
         return dates.format_time(t, format, locale=self, tzinfo=self.tzinfo)
 
-    def format_timedelta(self, delta, granularity='second', threshold=.85, add_direction=False, format='long'):
-        """Return a time delta
+    def format_timedelta(self, delta, granularity='second', threshold=0.85, add_direction=False, format='long'):
+        """Return a time delta.
 
         In:
           - ``delta`` -- a `timedelta` object or the delta in seconds
@@ -612,7 +623,7 @@ class Locale(CoreLocale):
         return dates.format_timedelta(delta, granularity, threshold, add_direction, format, self)
 
     def format_skeleton(self, skeleton, datetime=None, fuzzy=True):
-        """Return a time and/or date formatted according to the given pattern
+        """Return a time and/or date formatted according to the given pattern.
 
         In:
           - ``skeleton`` -- the pattern
@@ -625,7 +636,7 @@ class Locale(CoreLocale):
         return dates.format_skeleton(skeleton, datetime, self.tzinfo, fuzzy, self)
 
     def format_interval(self, start, end, skeleton=None, fuzzy=True):
-        """Format an interval between two instants according to the given pattern
+        """Format an interval between two instants according to the given pattern.
 
         In:
           - ``start`` -- First instant (`datetime`, `date` or `time`)
@@ -648,7 +659,7 @@ class Locale(CoreLocale):
     # ======================
 
     def get_timezone_gmt(self, datetime=None, width='long', return_z=False):
-        """Format the timezone associated with the given datetime
+        """Format the timezone associated with the given datetime.
 
         In:
           - ``datetime`` -- the `datetime`
@@ -661,7 +672,7 @@ class Locale(CoreLocale):
         return dates.get_timezone_gmt(datetime, width, self, return_z)
 
     def get_timezone_location(self, dt_or_timezone=None, return_city=False):
-        """Return a representation of the given timezone using "location format"
+        """Return a representation of the given timezone using "location format".
 
         The result depends on both the local display name of the country and the
         city associated with the time zone
@@ -676,8 +687,10 @@ class Locale(CoreLocale):
         """
         return dates.get_timezone_location(dt_or_timezone, self, return_city)
 
-    def get_timezone_name(self, dt_or_timezone=None, width='long', uncommon=False, zone_variant=None, return_zone=False):
-        """Return the localized display name for the given timezone
+    def get_timezone_name(
+        self, dt_or_timezone=None, width='long', uncommon=False, zone_variant=None, return_zone=False
+    ):
+        """Return the localized display name for the given timezone.
 
         In:
           - ``dt_or_tzinfo`` -- the ``datetime`` or ``tzinfo`` object that determines
@@ -698,7 +711,7 @@ class Locale(CoreLocale):
     # ===========
 
     def get_period_names(self, width='wide', context='stand-alone'):
-        """Return the names for day periods (AM/PM)
+        """Return the names for day periods (AM/PM).
 
         In:
           - ``width`` -- 'abbreviated', 'narrow' or 'wide'
@@ -710,7 +723,7 @@ class Locale(CoreLocale):
         return dates.get_period_names(width, context, locale=self)
 
     def get_day_names(self, width='wide', context='format'):
-        """Return the day names for the specified format
+        """Return the day names for the specified format.
 
         In:
           - ``width`` -- 'wide', 'abbreviated' or 'narrow'
@@ -722,7 +735,7 @@ class Locale(CoreLocale):
         return dates.get_day_names(width, context, self)
 
     def get_month_names(self, width='wide', context='format'):
-        """Return the month names for the specified format
+        """Return the month names for the specified format.
 
         In:
           - ``width`` -- 'wide', 'abbreviated' or 'narrow'
@@ -734,7 +747,7 @@ class Locale(CoreLocale):
         return dates.get_month_names(width, context, self)
 
     def get_quarter_names(self, width='wide', context='format'):
-        """Return the quarter names for the specified format
+        """Return the quarter names for the specified format.
 
         In:
           - ``width`` -- 'wide', 'abbreviated' or 'narrow'
@@ -746,7 +759,7 @@ class Locale(CoreLocale):
         return dates.get_quarter_names(width, context, self)
 
     def get_era_names(self, width='wide'):
-        """Return the era names used for the specified format
+        """Return the era names used for the specified format.
 
         In:
           - ``width`` -- 'wide', 'abbreviated' or 'narrow'
@@ -757,7 +770,7 @@ class Locale(CoreLocale):
         return dates.get_era_names(width, self)
 
     def get_date_format(self, format='medium'):
-        """Return the date formatting pattern for the specified format
+        """Return the date formatting pattern for the specified format.
 
         In:
           - ``format`` -- 'full', 'long', 'medium' or 'short'
@@ -768,7 +781,7 @@ class Locale(CoreLocale):
         return dates.get_date_format(format, self)
 
     def get_datetime_format(self, format='medium'):
-        """Return the datetime formatting pattern for the specified format
+        """Return the datetime formatting pattern for the specified format.
 
         In:
           - ``format`` -- 'full', 'long', 'medium' or 'short'
@@ -779,7 +792,7 @@ class Locale(CoreLocale):
         return dates.get_datetime_format(format, self)
 
     def get_time_format(self, format='medium'):
-        """Return the time formatting pattern for the specified format
+        """Return the time formatting pattern for the specified format.
 
         In:
           - ``format`` -- 'full', 'long', 'medium' or 'short'
@@ -793,7 +806,7 @@ class Locale(CoreLocale):
     # =============
 
     def parse_date(self, string):
-        """Parse a date from a string
+        """Parse a date from a string.
 
         This function uses the date format for the locale as a hint to determine
         the order in which the date fields appear in the string.
@@ -807,7 +820,7 @@ class Locale(CoreLocale):
         return dates.parse_date(string, self)
 
     def parse_time(self, string):
-        """Parse a time from a string
+        """Parse a time from a string.
 
         This function uses the time format for the locale as a hint to determine
         the order in which the time fields appear in the string.
@@ -824,7 +837,7 @@ class Locale(CoreLocale):
     # ==================
 
     def get_official_languages(self, regional=False, de_facto=False):
-        """Get the official language(s) for the given territory
+        """Get the official language(s) for the given territory.
 
         In:
           - ``regional`` -- include the regionally official languages
@@ -836,7 +849,7 @@ class Locale(CoreLocale):
         return languages.get_official_languages(self.territory, regional, de_facto)
 
     def get_territory_language_info(self):
-        """Get a dictionary of language information for a territory
+        """Get a dictionary of language information for a territory.
 
         Return:
           - the languages
@@ -863,52 +876,45 @@ class Locale(CoreLocale):
     # =================
 
     def format_number(self, number):
-        """Return the given number formatted
-        """
+        """Return the given number formatted."""
         return numbers.format_number(number, self)
 
     def format_decimal(self, number, format=None, decimal_quantization=True):
-        """Return the given decimal number formatted
-        """
+        """Return the given decimal number formatted."""
         return numbers.format_decimal(number, format, self, decimal_quantization)
 
     def format_currency(
-            self,
-            number, currency, format=None,
-            currency_digits=True, format_type='standard', decimal_quantization=True
+        self, number, currency, format=None, currency_digits=True, format_type='standard', decimal_quantization=True
     ):
-        """Return formatted currency value
-        """
-        return numbers.format_currency(number, currency, format, self, currency_digits, format_type, decimal_quantization)
+        """Return formatted currency value."""
+        return numbers.format_currency(
+            number, currency, format, self, currency_digits, format_type, decimal_quantization
+        )
 
     def format_percent(self, number, format=None, decimal_quantization=True):
-        """Return formatted percent value
-        """
+        """Return formatted percent value."""
         return numbers.format_percent(number, format, self, decimal_quantization)
 
     def format_scientific(self, number, format=None, decimal_quantization=True):
-        """Return value formatted in scientific notation
-        """
+        """Return value formatted in scientific notation."""
         return numbers.format_scientific(number, format, self, decimal_quantization)
 
     # Number parsing
     # ==============
 
     def parse_number(self, string):
-        """Parse localized number string into a long integer
-        """
+        """Parse localized number string into a long integer."""
         return numbers.parse_number(string, self)
 
     def parse_decimal(self, string):
-        """Parse localized decimal string into a float
-        """
+        """Parse localized decimal string into a float."""
         return numbers.parse_decimal(string, self)
 
     # Data access
     # ===========
 
     def get_currency_name(self, currency, count=None):
-        """Return the name used for the specified currency
+        """Return the name used for the specified currency.
 
         In:
           - ``currency`` -- the currency code
@@ -920,7 +926,7 @@ class Locale(CoreLocale):
         return numbers.get_currency_name(currency, count, self)
 
     def get_currency_symbol(self, currency):
-        """Return the symbol used for the specified currency
+        """Return the symbol used for the specified currency.
 
         In:
           - ``currency`` -- the currency code
@@ -931,37 +937,29 @@ class Locale(CoreLocale):
         return numbers.get_currency_symbol(currency, self)
 
     def get_decimal_symbol(self):
-        """Return the symbol used to separate decimal fractions
-        """
+        """Return the symbol used to separate decimal fractions."""
         return numbers.get_decimal_symbol(self)
 
     def get_exponential_symbol(self):
-        """Return the symbol used to separate mantissa and exponent
-        """
+        """Return the symbol used to separate mantissa and exponent."""
         return numbers.get_exponential_symbol(self)
 
     def get_group_symbol(self):
-        """Return the symbol used to separate groups of thousands
-        """
+        """Return the symbol used to separate groups of thousands."""
         return numbers.get_group_symbol(self)
 
     def get_plus_sign_symbol(self):
-        """Return the plus sign symbol
-        """
+        """Return the plus sign symbol."""
         return numbers.get_plus_sign_symbol(self)
 
     def get_minus_sign_symbol(self):
-        """Return the plus sign symbol
-        """
+        """Return the plus sign symbol."""
         return numbers.get_minus_sign_symbol(self)
 
     def get_territory_currencies(
-            self,
-            start_date=None, end_date=None,
-            tender=True, non_tender=False,
-            include_details=False
+        self, start_date=None, end_date=None, tender=True, non_tender=False, include_details=False
     ):
-        """Returns the list of currencies for the given territory that are valid for the given date range
+        """Returns the list of currencies for the given territory that are valid for the given date range.
 
         In:
           - ``start_date`` -- the start date. If not given today is assumed
@@ -973,11 +971,12 @@ class Locale(CoreLocale):
         Return:
           - the currencies
         """
-        return numbers.get_territory_currencies(self.territory, start_date, end_date, tender, non_tender, include_details)
+        return numbers.get_territory_currencies(
+            self.territory, start_date, end_date, tender, non_tender, include_details
+        )
 
     def __enter__(self):
-        """Push this locale to the stack
-        """
+        """Push this locale to the stack."""
         previous_locale = get_locale()
 
         if not self.translation_directories:
@@ -987,9 +986,9 @@ class Locale(CoreLocale):
         set_locale(self)
 
     def __exit__(self, *args, **kw):
-        """Pop this locale from the stack
-        """
+        """Pop this locale from the stack."""
         set_locale(self._previous_locales.pop())
+
 
 # -----------------------------------------------------------------------------
 
@@ -998,12 +997,14 @@ class NegotiatedLocale(Locale):
     def __init__(
         self,
         request,
-        locales, default_locale=(None, None),
-        dirname=None, domain=None,
-        timezone=None, default_timezone=None
+        locales,
+        default_locale=(None, None),
+        dirname=None,
+        domain=None,
+        timezone=None,
+        default_timezone=None,
     ):
-        """
-        A locale with negotiated language and territory
+        """A locale with negotiated language and territory.
 
         In:
           - ``request`` -- the HTTP request object
@@ -1024,7 +1025,7 @@ class NegotiatedLocale(Locale):
         locale = negotiate_locale(
             map(itemgetter(0), sorted(request.accept_language.parsed or (), key=itemgetter(1), reverse=True)),
             ['-'.join(locale).rstrip('-') for locale in locales],
-            '-'
+            '-',
         )
 
         if not locale:
@@ -1040,7 +1041,5 @@ class NegotiatedLocale(Locale):
                 territory = territory.upper()
 
         super(NegotiatedLocale, self).__init__(
-            language, territory,
-            dirname=dirname, domain=domain,
-            timezone=timezone, default_timezone=default_timezone
+            language, territory, dirname=dirname, domain=domain, timezone=timezone, default_timezone=default_timezone
         )
