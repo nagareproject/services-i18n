@@ -88,12 +88,16 @@ def lazy_ungettext(singular, plural, n, domain=None, **kw):
 _LN = lazy_ungettext  # noqa: E305
 
 
-def to_timezone(dt):
+def to_timezone(dt=None):
     return get_locale().to_timezone(dt)
 
 
-def to_utc(dt):
+def to_utc(dt=None):
     return get_locale().to_utc(dt)
+
+
+def now():
+    return get_locale().now
 
 
 def format_datetime(dt=None, format='medium'):
@@ -528,7 +532,7 @@ class Locale(CoreLocale):
 
     _LN = lazy_ungettext
 
-    def to_timezone(self, dt):
+    def to_timezone(self, dt=None):
         """Return a localized datetime object.
 
         In:
@@ -537,6 +541,9 @@ class Locale(CoreLocale):
         Return:
           - new localized ``datetime`` object
         """
+        if dt is None:
+            dt = datetime.datetime.now(tz=pytz.UTC)
+
         if not self.tzinfo:
             return dt
 
@@ -545,7 +552,11 @@ class Locale(CoreLocale):
 
         return dt.astimezone(self.tzinfo)
 
-    def to_utc(self, dt):
+    @property
+    def now(self):
+        return self.to_timezone()
+
+    def to_utc(self, dt=None):
         """Return a UTC datetime object.
 
         In:
@@ -554,6 +565,9 @@ class Locale(CoreLocale):
         Return:
           - new localized to UTC ``datetime`` object
         """
+        if dt is None:
+            dt = datetime.datetime.now(tz=pytz.UTC)
+
         if not dt.tzinfo:
             dt = (self.default_timezone or pytz.UTC).localize(dt)
 
