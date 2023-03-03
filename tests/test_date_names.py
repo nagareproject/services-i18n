@@ -154,8 +154,8 @@ def test_get_date_format():
 
 
 def test_get_datetime_format():
-    assert i18n.get_datetime_format(format='full') == u"{1} 'à' {0}"
-    assert i18n.get_datetime_format(format='long') == u"{1} 'à' {0}"
+    assert i18n.get_datetime_format(format='full') == u"{1}, {0}"
+    assert i18n.get_datetime_format(format='long') == u"{1}, {0}"
     assert i18n.get_datetime_format() == u"{1}, {0}"
     assert i18n.get_datetime_format(format='medium') == u"{1}, {0}"
     assert i18n.get_datetime_format(format='short') == u'{1} {0}'

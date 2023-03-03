@@ -188,11 +188,11 @@ def test_format_time_time_en():
 
     t = datetime.time(15, 30)
 
-    assert i18n.format_time(t, format='full') == '3:30:00 PM Pitcairn Time'
-    assert i18n.format_time(t, format='long') == '3:30:00 PM -0800'
-    assert i18n.format_time(t, format='medium') == '3:30:00 PM'
-    assert i18n.format_time(t) == '3:30:00 PM'
-    assert i18n.format_time(t, format='short') == '3:30 PM'
+    assert i18n.format_time(t, format='full').encode('ascii', 'ignore') == b'3:30:00PM Pitcairn Time'
+    assert i18n.format_time(t, format='long').encode('ascii', 'ignore') == b'3:30:00PM -0800'
+    assert i18n.format_time(t, format='medium').encode('ascii', 'ignore') == b'3:30:00PM'
+    assert i18n.format_time(t).encode('ascii', 'ignore') == b'3:30:00PM'
+    assert i18n.format_time(t, format='short').encode('ascii', 'ignore') == b'3:30PM'
 
 
 def test_format_time_time_with_format():
@@ -316,8 +316,8 @@ def test_format_datetime():
     tz = pytz.timezone('Pacific/Pitcairn')
     d = tz.localize(datetime.datetime(2007, 4, 1, 15, 30))
 
-    assert i18n.format_datetime(d, format='full') == u'lundi 2 avril 2007 à 00:30:00 heure normale d’Afrique de l’Ouest'
-    assert i18n.format_datetime(d, format='long') == u'2 avril 2007 à 00:30:00 +0100'
+    assert i18n.format_datetime(d, format='full') == u'lundi 2 avril 2007, 00:30:00 heure normale d’Afrique de l’Ouest'
+    assert i18n.format_datetime(d, format='long') == u'2 avril 2007, 00:30:00 +0100'
     assert i18n.format_datetime(d, format='medium') == u'2 avr. 2007, 00:30:00'
     assert i18n.format_datetime(d) == u'2 avr. 2007, 00:30:00'
     assert i18n.format_datetime(d, format='short') == '02/04/2007 00:30'

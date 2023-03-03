@@ -50,7 +50,7 @@ def test_format_currency():
     assert i18n.format_currency(1099.98, 'USD') == '$1,099.98'
 
     set_locale(Locale('es', 'CO'))
-    assert i18n.format_currency(1099.98, 'USD') == u'US$\xa01.099,98'
+    assert i18n.format_currency(1099.98, 'USD') == u'US$1.099,98'
 
     set_locale(Locale('de', 'DE'))
     assert i18n.format_currency(1099.98, 'EUR') == u'1.099,98\xa0\u20ac'

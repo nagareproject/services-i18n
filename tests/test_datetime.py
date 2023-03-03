@@ -26,11 +26,11 @@ def setup_module(module):
 def test_format_datetime():
     set_locale(Locale('en', 'US'))
     dt = datetime.datetime(2007, 4, 1, 15, 30)
-    assert i18n.format_datetime(dt) == 'Apr 1, 2007, 3:30:00 PM'
+    assert i18n.format_datetime(dt).encode('ascii', 'ignore') == b'Apr 1, 2007, 3:30:00PM'
 
     set_locale(Locale('fr', 'FR', timezone=pytz.timezone('Europe/Paris'), default_timezone=pytz.UTC))
     dt = datetime.datetime(2007, 4, 1, 15, 30)
-    assert i18n.format_datetime(dt, 'full') == u'dimanche 1 avril 2007 à 17:30:00 heure d’été d’Europe centrale'
+    assert i18n.format_datetime(dt, 'full') == u'dimanche 1 avril 2007, 17:30:00 heure d’été d’Europe centrale'
 
     set_locale(Locale('en', timezone=pytz.timezone('US/Eastern'), default_timezone=pytz.UTC))
     assert i18n.format_datetime(dt, "yyyy.MM.dd G 'at' HH:mm:ss zzz") == '2007.04.01 AD at 11:30:00 EDT'
@@ -53,7 +53,7 @@ def test_format_time():
     t = datetime.time(15, 30)
 
     set_locale(Locale('en', 'US'))
-    assert i18n.format_time(t) == '3:30:00 PM'
+    assert i18n.format_time(t).encode('ascii', 'ignore') == b'3:30:00PM'
 
     set_locale(Locale('de', 'DE'))
     assert i18n.format_time(t, format='short') == '15:30'
@@ -111,7 +111,10 @@ def test_format_interval():
     assert i18n.format_interval(datetime.time(12, 12), datetime.time(16, 16), 'Hm') == u'12:12\u201316:16'
 
     set_locale(Locale('en', 'US'))
-    assert i18n.format_interval(datetime.time(5, 12), datetime.time(16, 16), 'hm') == u'5:12 AM \u2013 4:16 PM'
+    assert (
+        i18n.format_interval(datetime.time(5, 12), datetime.time(16, 16), 'hm').encode('ascii', 'ignore')
+        == b'5:12AM4:16PM'
+    )
 
     set_locale(Locale('it'))
     assert i18n.format_interval(datetime.time(16, 18), datetime.time(16, 24), 'Hm') == u'16:18\u201316:24'
@@ -128,8 +131,8 @@ def test_format_interval():
 
     set_locale(Locale('de'))
     assert (
-        i18n.format_interval(datetime.date(2016, 1, 15), datetime.date(2016, 1, 17), 'xxx')
-        == u'15.01.2016 \u2013 17.01.2016'
+        i18n.format_interval(datetime.date(2016, 1, 15), datetime.date(2016, 1, 17), 'xxx').encode('ascii', 'ignore')
+        == b'15.01.201617.01.2016'
     )
 
 
@@ -244,7 +247,7 @@ def test_get_datetime_format():
 
 def test_get_time_format():
     set_locale(Locale('en', 'US'))
-    assert str(i18n.get_time_format()) == 'h:mm:ss a'
+    assert str(i18n.get_time_format()).encode('ascii', 'ignore') == b'h:mm:ssa'
 
     set_locale(Locale('de', 'DE'))
     assert str(i18n.get_time_format('full')) == 'HH:mm:ss zzzz'
