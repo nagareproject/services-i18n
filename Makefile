@@ -23,8 +23,8 @@ qa:
 	$(MAKE) tests
 
 qa-fix:
-	python -m ruff --fix src
 	python -m black src
+	python -m ruff --fix src
 
 doc:
 	python -m sphinx.cmd.build -b html doc ${DOC_OUTPUT_DIR}

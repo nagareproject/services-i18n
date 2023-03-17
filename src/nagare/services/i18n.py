@@ -27,6 +27,12 @@ class I18NService(plugin.Plugin):
     def create_config_spec(cls, command_name, command):
         config_spec = {}
 
+        if command_name == 'extract':
+            config_spec['_root'] = 'string(default="$root")'
+            config_spec[
+                'relative_location'
+            ] = 'boolean(default=False, help="if \\\"add_location\\\" is \\\"full\\\" or \\\"file\\\" generates file names relatives from the project root")'  # noqa: E501
+
         for name, _, description in command.user_options:
             name = name.strip('=')
             keyword = name.replace('-', '_')

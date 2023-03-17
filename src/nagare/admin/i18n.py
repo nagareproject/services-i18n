@@ -8,6 +8,7 @@
 # --
 
 import os
+from tempfile import NamedTemporaryFile
 
 from babel import Locale, localedata
 from babel.messages.frontend import CommandLineInterface
@@ -45,16 +46,22 @@ class Command(command.Command):
         return command_name, command
 
     @staticmethod
-    def run_command(command, **config):
+    def create_logger(command, i18n_service, **config):
+        command.log = i18n_service.logger
+        return command.log
+
+    @classmethod
+    def run_command(cls, command, services_service, **config):
+        services_service(cls.create_logger, command, **config)
+
         command.initialize_options()
         command.__dict__.update(config)
         command.finalize_options()
 
         return command.run()
 
-    def run(self, i18n_service, **params):
+    def run(self, i18n_service, services_service, **params):
         command_name, command = self.create_command()
-        command.log = i18n_service.logger
 
         config = i18n_service.plugin_config[command_name]
         configs = [value for value in config.values() if isinstance(value, dict)]
@@ -62,7 +69,7 @@ class Command(command.Command):
 
         for config in [config] + configs:
             config.update(params)
-            r = self.run_command(command, **dict(config, **params))
+            r = services_service(self.run_command, command, **dict(config, **params))
             if r:
                 break
 
@@ -81,7 +88,16 @@ class Extract(Command):
             project='$app_name', version='$app_version', input_dirs='$root', output_file='$data/locale/messages.pot'
         )
 
-    def run_command(self, command, input_dirs, output_file, keywords, **config):
+    @classmethod
+    def create_logger(cls, command, i18n_service, _output_file, **config):
+        logger = super(Extract, cls).create_logger(command, i18n_service, **config)
+        logger.info = lambda msg, *args, info=logger.info: info(
+            msg, *((_output_file,) if msg == 'writing PO template file to %s' else args)
+        )
+
+    def run_command(
+        self, command, _root, input_dirs, output_file, keywords, relative_location, services_service, **config
+    ):
         input_dirs = [load_object(d)[1] if is_reference(d) else d.strip() for d in input_dirs]
 
         output_dir = os.path.dirname(output_file)
@@ -93,9 +109,28 @@ class Extract(Command):
             'ungettext:1,2 , lazy_gettext , lazy_ugettext , lazy_ngettext:1,2 , lazy_ungettext:1,2'
         )
 
-        return super(Extract, self).run_command(
-            command, input_dirs=input_dirs, output_file=output_file, keywords=keywords, **config
-        )
+        with NamedTemporaryFile('rb') as temp:
+            r = services_service(
+                super(Extract, self).run_command,
+                command,
+                input_dirs=input_dirs,
+                output_file=temp.name,
+                keywords=keywords,
+                _output_file=output_file,
+                **config,
+            )
+
+            prefix = b'#: ' + _root.encode('utf8')
+            root_len = len(_root)
+
+            with open(output_file, 'wb') as outfile:
+                for line in temp:
+                    if relative_location and line.startswith(prefix):
+                        line = b'#: ' + line[root_len + 4 :]
+
+                    outfile.write(line)
+
+        return r
 
 
 class Init(Command):
@@ -107,12 +142,14 @@ class Init(Command):
     def create_command(cls, **defaults):
         return super(Init, cls).create_command(input_file='${/i18n/extract/output_file}', output_dir='')
 
-    def run_command(self, command, input_file, output_dir, **config):
+    def run_command(self, command, input_file, output_dir, services_service, **config):
         output_dir = output_dir or os.path.dirname(input_file)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        return super(Init, self).run_command(command, input_file=input_file, output_dir=output_dir, **config)
+        return services_service(
+            super(Init, self).run_command, command, input_file=input_file, output_dir=output_dir, **config
+        )
 
 
 class Update(Command):
@@ -126,12 +163,14 @@ class Update(Command):
             input_file='${/i18n/extract/output_file}', domain='${/i18n/init/domain}', output_dir=''
         )
 
-    def run_command(self, command, input_file, output_dir, **config):
+    def run_command(self, command, input_file, output_dir, services_service, **config):
         output_dir = output_dir or os.path.dirname(input_file)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        return super(Update, self).run_command(command, input_file=input_file, output_dir=output_dir, **config)
+        return services_service(
+            super(Update, self).run_command, command, input_file=input_file, output_dir=output_dir, **config
+        )
 
 
 class Compile(Command):
@@ -147,9 +186,9 @@ class Compile(Command):
             domain='${/i18n/init/domain}',
         )
 
-    def run_command(self, command, input_file, directory, **config):
+    def run_command(self, command, input_file, directory, services_service, **config):
         directory = directory or os.path.dirname(input_file)
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        return super(Compile, self).run_command(command, directory=directory, **config)
+        return services_service(super(Compile, self).run_command, command, directory=directory, **config)
