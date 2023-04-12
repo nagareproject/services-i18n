@@ -15,8 +15,8 @@ from nagare.admin import i18n
 from nagare.services import plugin
 
 
-def on_change(event, path, o, method):
-    return (event.event_type in ('created', 'modified')) and getattr(o, method)(path)
+def on_change(event, path, o, method, services):
+    return (event.event_type in ('created', 'modified')) and services(getattr(o, method), path)
 
 
 class I18NService(plugin.Plugin):
@@ -76,7 +76,7 @@ class I18NService(plugin.Plugin):
     def output_directory(self):
         return self.plugin_config['compile']['directory'] or self.input_directory
 
-    def handle_start(self, app, reloader_service=None):
+    def handle_start(self, app, services_service, reloader_service=None):
         watch = self.plugin_config['watch']
 
         if watch and (reloader_service is not None) and self.input_directory and os.path.isdir(self.input_directory):
@@ -84,17 +84,21 @@ class I18NService(plugin.Plugin):
                 for filename in files:
                     if filename.endswith('.po'):
                         filename = os.path.join(root, filename)
-                        reloader_service.watch_file(filename, on_change, o=self, method='compile_on_change')
+                        reloader_service.watch_file(
+                            filename, on_change, o=self, method='compile_on_change', services=services_service
+                        )
 
             if os.path.isfile(self.input_file):
-                reloader_service.watch_file(self.input_file, on_change, o=self, method='update_on_change')
+                reloader_service.watch_file(
+                    self.input_file, on_change, o=self, method='update_on_change', services=services_service
+                )
 
-    def update_on_change(self, path):
-        i18n.Update().run(self)
+    def update_on_change(self, path, services_service):
+        services_service(i18n.Update().run)
         return True
 
-    def compile_on_change(self, path):
-        i18n.Compile().run(self)
+    def compile_on_change(self, path, services_service):
+        services_service(i18n.Compile().run)
         return False
 
 
