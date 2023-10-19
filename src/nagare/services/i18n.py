@@ -31,7 +31,7 @@ class I18NService(plugin.Plugin):
             config_spec['_root'] = 'string(default="$root")'
             config_spec[
                 'relative_location'
-            ] = 'boolean(default=False, help="if \\\"add_location\\\" is \\\"full\\\" or \\\"file\\\" generates file names relatives from the project root")'  # noqa: E501
+            ] = 'boolean(default=False, help="if \\"add_location\\" is \\"full\\" or \\"file\\" generates file names relatives from the project root")'  # noqa: E501
 
         for name, _, description in command.user_options:
             name = name.strip('=')

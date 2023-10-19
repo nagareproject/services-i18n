@@ -9,6 +9,7 @@
 
 import os
 from tempfile import NamedTemporaryFile
+import types
 
 from babel import Locale, localedata
 from babel.messages.frontend import CommandLineInterface
@@ -45,14 +46,16 @@ class Command(command.Command):
 
         return command_name, command
 
-    @staticmethod
-    def create_logger(command, i18n_service, **config):
-        command.log = i18n_service.logger
-        return command.log
+    def create_logger(self, command, i18n_service, **config):
+        logger = i18n_service.logger
+        if isinstance(logger.info, types.MethodType):
+            self.log_info = logger.info
 
-    @classmethod
-    def run_command(cls, command, services_service, **config):
-        services_service(cls.create_logger, command, **config)
+        command.log = logger
+        return logger
+
+    def run_command(self, command, services_service, **config):
+        services_service(self.create_logger, command, **config)
 
         command.initialize_options()
         command.__dict__.update(config)
@@ -88,10 +91,9 @@ class Extract(Command):
             project='$app_name', version='$app_version', input_dirs='$root', output_file='$data/locale/messages.pot'
         )
 
-    @classmethod
-    def create_logger(cls, command, i18n_service, _output_file, **config):
-        logger = super(Extract, cls).create_logger(command, i18n_service, **config)
-        logger.info = lambda msg, *args, info=logger.info: info(
+    def create_logger(self, command, i18n_service, _output_file, **config):
+        logger = super(Extract, self).create_logger(command, i18n_service, **config)
+        logger.info = lambda msg, *args: self.log_info(
             msg, *((_output_file,) if msg == 'writing PO template file to %s' else args)
         )
 
