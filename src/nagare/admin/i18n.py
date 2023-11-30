@@ -137,7 +137,7 @@ class Extract(Command):
 
 class Init(Command):
     def set_arguments(self, parser):
-        parser.add_argument('locale')
+        parser.add_argument('locale').completer = lambda **kw: localedata.locale_identifiers()
         super(Init, self).set_arguments(parser)
 
     @classmethod
@@ -156,7 +156,7 @@ class Init(Command):
 
 class Update(Command):
     def set_arguments(self, parser):
-        parser.add_argument('-l', '--locale')
+        parser.add_argument('-l', '--locale').completer = lambda **kw: localedata.locale_identifiers()
         super(Update, self).set_arguments(parser)
 
     @classmethod
@@ -177,7 +177,7 @@ class Update(Command):
 
 class Compile(Command):
     def set_arguments(self, parser):
-        parser.add_argument('-l', '--locale')
+        parser.add_argument('-l', '--locale').completer = lambda **kw: localedata.locale_identifiers()
         super(Compile, self).set_arguments(parser)
 
     @classmethod
