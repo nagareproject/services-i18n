@@ -8,13 +8,13 @@
 # --
 
 import os
-from tempfile import NamedTemporaryFile
 import types
+from tempfile import NamedTemporaryFile
 
 from babel import Locale, localedata
-from babel.messages.frontend import CommandLineInterface
 from nagare.admin import command
-from nagare.server.reference import is_reference, load_object
+from babel.messages.frontend import CommandLineInterface
+from nagare.server.reference import load_object, is_reference
 
 
 class Commands(command.Commands):

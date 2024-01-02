@@ -11,12 +11,13 @@
 
 import os
 
-from nagare.admin import i18n
+from nagare import i18n
+from nagare.admin import i18n as i18n_commands
 from nagare.services import plugin
 
 
 def on_change(event, path, o, method, services):
-    return (event.event_type in ('created', 'modified')) and services(getattr(o, method), path)
+    return (event.event_type in ('created', 'modified', 'moved')) and services(getattr(o, method), path)
 
 
 class I18NService(plugin.Plugin):
@@ -94,13 +95,14 @@ class I18NService(plugin.Plugin):
                 )
 
     def update_on_change(self, path, services_service):
-        services_service(i18n.Update().run)
-        return True
+        services_service(i18n_commands.Update().run)
+        return None
 
     def compile_on_change(self, path, services_service):
-        services_service(i18n.Compile().run)
+        services_service(i18n_commands.Compile().run)
+        i18n.invalidate_caches()
         return False
 
 
-for cls in (i18n.Extract, i18n.Init, i18n.Update, i18n.Compile):
+for cls in (i18n_commands.Extract, i18n_commands.Init, i18n_commands.Update, i18n_commands.Compile):
     I18NService.create_config_spec(*cls.create_command())

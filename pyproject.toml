@@ -71,7 +71,7 @@ convention = 'google'
 
 [tool.ruff.isort]
 known-third-party = ['nagare']
-force-sort-within-sections = true
+length-sort = true
 
 [tool.ruff.format]
 quote-style = 'single'

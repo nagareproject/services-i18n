@@ -12,10 +12,10 @@
 import datetime
 from operator import itemgetter
 
-from babel import Locale as CoreLocale
-from babel import core, dates, languages, lists, negotiate_locale, numbers, support
-from nagare import local
 import pytz
+from babel import Locale as CoreLocale
+from babel import core, dates, lists, numbers, support, languages, negotiate_locale
+from nagare import local
 
 
 def get_locale():
@@ -265,6 +265,10 @@ def get_territory_currencies(start_date=None, end_date=None, tender=True, non_te
 # ----------
 
 _translations_cache = {}  # Already loaded translation objects
+
+
+def invalidate_caches():
+    _translations_cache.clear()
 
 
 class DummyTranslation(object):
