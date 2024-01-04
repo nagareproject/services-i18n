@@ -17,7 +17,7 @@ from nagare.services import plugin
 
 
 def on_change(event, path, o, method, services):
-    return (event.event_type in ('created', 'modified', 'moved')) and services(getattr(o, method), path)
+    return services(getattr(o, method), path) if event.event_type in ('created', 'modified', 'moved') else None
 
 
 class I18NService(plugin.Plugin):
