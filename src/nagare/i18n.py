@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2023 Net-ng.
+# Copyright (c) 2008-2024 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -15,6 +15,7 @@ from operator import itemgetter
 import pytz
 from babel import Locale as CoreLocale
 from babel import core, dates, lists, numbers, support, languages, negotiate_locale
+
 from nagare import local
 
 
