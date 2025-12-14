@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -32,7 +32,7 @@ class LazyProxy(support.LazyProxy):
 
     def __init__(self, func, *args, **kw):
         """Always evaluate, without any cache."""
-        super(LazyProxy, self).__init__(func, *args, enable_cache=True, **kw)
+        super().__init__(func, *args, enable_cache=True, **kw)
 
     def __getstate__(self):
         return self._func, self._args, self._kwargs
@@ -272,7 +272,7 @@ def invalidate_caches():
     _translations_cache.clear()
 
 
-class DummyTranslation(object):
+class DummyTranslation:
     """Identity translation."""
 
     @staticmethod
@@ -320,7 +320,7 @@ class Locale(CoreLocale):
             no associated timezone. If no default timezone is given, the ``timezone``
             value is used
         """
-        super(Locale, self).__init__(language, territory, script, variant)
+        super().__init__(language, territory, script, variant)
 
         self.domain = domain
         self.translation_directories = {}
@@ -1059,6 +1059,6 @@ class NegotiatedLocale(Locale):
                 language, territory = locale.split('-')
                 territory = territory.upper()
 
-        super(NegotiatedLocale, self).__init__(
+        super().__init__(
             language, territory, dirname=dirname, domain=domain, timezone=timezone, default_timezone=default_timezone
         )

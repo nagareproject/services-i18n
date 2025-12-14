@@ -1,7 +1,5 @@
-# Encoding: utf-8
-
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -12,7 +10,8 @@
 import datetime
 
 import pytz
-from nagare import local, i18n
+
+from nagare import i18n, local
 
 
 def setup_module(module):
@@ -140,7 +139,7 @@ def test_format_time_time_fr1():
 
     t = datetime.time(15, 30)
 
-    assert i18n.format_time(t, format='full') == u'15:30:00 temps universel coordonné'
+    assert i18n.format_time(t, format='full') == '15:30:00 temps universel coordonné'
     assert i18n.format_time(t, format='long') == '15:30:00 TU'
     assert i18n.format_time(t, format='medium') == '15:30:00'
     assert i18n.format_time(t) == '15:30:00'
@@ -152,7 +151,7 @@ def test_format_time_time_fr2():
 
     t = datetime.time(15, 30)
 
-    assert i18n.format_time(t, format='full') == u'15:30:00 heure normale d’Afrique de l’Ouest'
+    assert i18n.format_time(t, format='full') == '15:30:00 heure normale d’Afrique de l’Ouest'
     assert i18n.format_time(t, format='long') == '15:30:00 +0100'
     assert i18n.format_time(t, format='medium') == '15:30:00'
     assert i18n.format_time(t) == '15:30:00'
@@ -164,7 +163,7 @@ def test_format_time_time_fr3():
 
     t = datetime.time(15, 30, tzinfo=pytz.timezone('Pacific/Pitcairn'))
 
-    assert i18n.format_time(t, format='full') == u'15:30:00 temps universel coordonné'
+    assert i18n.format_time(t, format='full') == '15:30:00 temps universel coordonné'
     assert i18n.format_time(t, format='long') == '15:30:00 TU'
     assert i18n.format_time(t, format='medium') == '15:30:00'
     assert i18n.format_time(t) == '15:30:00'
@@ -176,7 +175,7 @@ def test_format_time_time_fr4():
 
     t = datetime.time(15, 30, tzinfo=pytz.timezone('Pacific/Pitcairn'))
 
-    assert i18n.format_time(t, format='full') == u'15:30:00 heure normale d’Afrique de l’Ouest'
+    assert i18n.format_time(t, format='full') == '15:30:00 heure normale d’Afrique de l’Ouest'
     assert i18n.format_time(t, format='long') == '15:30:00 +0100'
     assert i18n.format_time(t, format='medium') == '15:30:00'
     assert i18n.format_time(t) == '15:30:00'
@@ -210,7 +209,7 @@ def test_format_time_datetime_fr1():
 
     d = datetime.datetime(2007, 4, 1, 15, 30)
 
-    assert i18n.format_time(d, format='full') == u'15:30:00 temps universel coordonné'
+    assert i18n.format_time(d, format='full') == '15:30:00 temps universel coordonné'
     assert i18n.format_time(d, format='long') == '15:30:00 TU'
     assert i18n.format_time(d, format='medium') == '15:30:00'
     assert i18n.format_time(d) == '15:30:00'
@@ -222,7 +221,7 @@ def test_format_time_datetime_fr2():
 
     d = datetime.datetime(2007, 4, 1, 15, 30)
 
-    assert i18n.format_time(d, format='full') == u'15:30:00 heure normale d’Afrique de l’Ouest'
+    assert i18n.format_time(d, format='full') == '15:30:00 heure normale d’Afrique de l’Ouest'
     assert i18n.format_time(d, format='long') == '15:30:00 +0100'
     assert i18n.format_time(d, format='medium') == '15:30:00'
     assert i18n.format_time(d) == '15:30:00'
@@ -234,7 +233,7 @@ def test_format_time_datetime_fr3():
 
     d = datetime.datetime(2007, 4, 1, 15, 30)
 
-    assert i18n.format_time(d, format='full') == u'16:30:00 heure normale d’Afrique de l’Ouest'
+    assert i18n.format_time(d, format='full') == '16:30:00 heure normale d’Afrique de l’Ouest'
     assert i18n.format_time(d, format='long') == '16:30:00 +0100'
     assert i18n.format_time(d, format='medium') == '16:30:00'
     assert i18n.format_time(d) == '16:30:00'
@@ -247,7 +246,7 @@ def test_format_time_datetime_fr4():
     tz = pytz.timezone('Pacific/Pitcairn')
     d = tz.localize(datetime.datetime(2007, 4, 1, 15, 30))
 
-    assert i18n.format_time(d, format='full') == u'23:30:00 temps universel coordonné'
+    assert i18n.format_time(d, format='full') == '23:30:00 temps universel coordonné'
     assert i18n.format_time(d, format='long') == '23:30:00 TU'
     assert i18n.format_time(d, format='medium') == '23:30:00'
     assert i18n.format_time(d) == '23:30:00'
@@ -260,7 +259,7 @@ def test_format_time_datetime_fr5():
     tz = pytz.timezone('Pacific/Pitcairn')
     d = tz.localize(datetime.datetime(2007, 4, 1, 15, 30))
 
-    assert i18n.format_time(d, format='full') == u'00:30:00 heure normale d’Afrique de l’Ouest'
+    assert i18n.format_time(d, format='full') == '00:30:00 heure normale d’Afrique de l’Ouest'
     assert i18n.format_time(d, format='long') == '00:30:00 +0100'
     assert i18n.format_time(d, format='medium') == '00:30:00'
     assert i18n.format_time(d) == '00:30:00'
@@ -271,11 +270,11 @@ def test_format_time_datetime_with_format():
     i18n.set_locale(i18n.Locale('en', 'US', timezone='Pacific/Pitcairn'))
 
     d = datetime.datetime(2007, 4, 1, 15, 30)
-    assert i18n.format_time(d, format="hh 'o''clock' a, zzzz") == u"03 o'clock PM, Pitcairn Time"
+    assert i18n.format_time(d, format="hh 'o''clock' a, zzzz") == "03 o'clock PM, Pitcairn Time"
 
     tz = pytz.timezone('Africa/Niamey')
     d = tz.localize(datetime.datetime(2007, 4, 1, 15, 30))
-    assert i18n.format_time(d, format="hh 'o''clock' a, zzzz") == u"06 o'clock AM, Pitcairn Time"
+    assert i18n.format_time(d, format="hh 'o''clock' a, zzzz") == "06 o'clock AM, Pitcairn Time"
 
 
 def test_format_date_date():
@@ -316,10 +315,10 @@ def test_format_datetime():
     tz = pytz.timezone('Pacific/Pitcairn')
     d = tz.localize(datetime.datetime(2007, 4, 1, 15, 30))
 
-    assert i18n.format_datetime(d, format='full') == u'lundi 2 avril 2007, 00:30:00 heure normale d’Afrique de l’Ouest'
-    assert i18n.format_datetime(d, format='long') == u'2 avril 2007, 00:30:00 +0100'
-    assert i18n.format_datetime(d, format='medium') == u'2 avr. 2007, 00:30:00'
-    assert i18n.format_datetime(d) == u'2 avr. 2007, 00:30:00'
+    assert i18n.format_datetime(d, format='full') == 'lundi 2 avril 2007, 00:30:00 heure normale d’Afrique de l’Ouest'
+    assert i18n.format_datetime(d, format='long') == '2 avril 2007, 00:30:00 +0100'
+    assert i18n.format_datetime(d, format='medium') == '2 avr. 2007, 00:30:00'
+    assert i18n.format_datetime(d) == '2 avr. 2007, 00:30:00'
     assert i18n.format_datetime(d, format='short') == '02/04/2007 00:30'
 
 

@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -15,11 +15,11 @@ from nagare.services import plugin
 
 class I18NLocale(plugin.Plugin):
     LOAD_PRIORITY = 80
-    CONFIG_SPEC = dict(plugin.Plugin.CONFIG_SPEC, dirname='string(default=None)')
+    CONFIG_SPEC = plugin.Plugin.CONFIG_SPEC | {'dirname': 'string(default=None)'}
     LOCALE_FACTORY = Locale
 
     def __init__(self, name, dist, dirname=None, i18n_service=None, services_service=None, **config):
-        services_service(super(I18NLocale, self).__init__, name, dist, dirname=dirname, **config)
+        services_service(super().__init__, name, dist, dirname=dirname, **config)
 
         self.config = config
         self.config['dirname'] = dirname or i18n_service.output_directory
@@ -45,20 +45,19 @@ class I18NLocale(plugin.Plugin):
 
 
 class I18NPredefinedLocale(I18NLocale):
-    CONFIG_SPEC = dict(
-        I18NLocale.CONFIG_SPEC,
-        language='string',
-        territory='string(default=None)',
-        script='string(default=None)',
-        variant='string(default=None)',
-        dirname='string(default=None)',
-        domain='string(default=None)',
-        timezone='string(default=None)',
-        default_timezone='string(default=None)',
-    )
+    CONFIG_SPEC = I18NLocale.CONFIG_SPEC | {
+        'language': 'string',
+        'territory': 'string(default=None)',
+        'script': 'string(default=None)',
+        'variant': 'string(default=None)',
+        'dirname': 'string(default=None)',
+        'domain': 'string(default=None)',
+        'timezone': 'string(default=None)',
+        'default_timezone': 'string(default=None)',
+    }
 
     def __init__(self, name, dist, services_service, **config):
-        services_service(super(I18NPredefinedLocale, self).__init__, name, dist, **config)
+        services_service(super().__init__, name, dist, **config)
 
         self.locale = self.create_locale()
 
@@ -70,15 +69,14 @@ class I18NPredefinedLocale(I18NLocale):
 
 
 class I18NNegociatedLocale(I18NLocale):
-    CONFIG_SPEC = dict(
-        I18NLocale.CONFIG_SPEC,
-        locales='string_list',
-        default_locale='string',
-        dirname='string(default=None)',
-        domain='string(default=None)',
-        timezone='string(default=None)',
-        default_timezone='string(default=None)',
-    )
+    CONFIG_SPEC = I18NLocale.CONFIG_SPEC | {
+        'locales': 'string_list',
+        'default_locale': 'string',
+        'dirname': 'string(default=None)',
+        'domain': 'string(default=None)',
+        'timezone': 'string(default=None)',
+        'default_timezone': 'string(default=None)',
+    }
     LOCALE_FACTORY = NegotiatedLocale
 
     def __init__(self, name, dist, locales=(), default_locale='', services_service=None, **config):
@@ -86,7 +84,7 @@ class I18NNegociatedLocale(I18NLocale):
         default_locale = (default_locale + '_').split('_')[:2]
 
         services_service(
-            super(I18NNegociatedLocale, self).__init__,
+            super().__init__,
             name,
             dist,
             locales=locales,
@@ -95,4 +93,4 @@ class I18NNegociatedLocale(I18NLocale):
         )
 
     def get_locale(self, request, **params):
-        return super(I18NNegociatedLocale, self).create_locale(request=request)
+        return super().create_locale(request=request)

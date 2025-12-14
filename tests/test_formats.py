@@ -1,7 +1,5 @@
-# Encoding: utf-8
-
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -11,7 +9,7 @@
 
 import decimal
 
-from nagare import local, i18n
+from nagare import i18n, local
 
 
 def setup_module(module):
@@ -20,7 +18,7 @@ def setup_module(module):
 
 
 def test_get_currency_name():
-    assert i18n.get_currency_name('USD') == u'dollar des États-Unis'
+    assert i18n.get_currency_name('USD') == 'dollar des États-Unis'
 
 
 def test_get_currency_symbol():
@@ -44,27 +42,27 @@ def test_get_exponential_symbol():
 
 
 def test_get_group_symbol():
-    assert i18n.get_group_symbol() == u'\N{NARROW NO-BREAK SPACE}'
+    assert i18n.get_group_symbol() == '\N{NARROW NO-BREAK SPACE}'
 
 
 def test_format_number():
     sep = i18n.get_group_symbol()
-    assert i18n.format_number(1099) == u'1{}099'.format(sep)
+    assert i18n.format_number(1099) == '1{}099'.format(sep)
 
 
 def test_format_decimal():
     sep = i18n.get_group_symbol()
-    assert i18n.format_decimal(1236.1236) == u'1{}236,124'.format(sep)
+    assert i18n.format_decimal(1236.1236) == '1{}236,124'.format(sep)
 
 
 def test_format_currency():
     sep = i18n.get_group_symbol()
-    assert i18n.format_currency(1236.126, 'EUR') == u'1{}236,13\N{NO-BREAK SPACE}\N{EURO SIGN}'.format(sep)
+    assert i18n.format_currency(1236.126, 'EUR') == '1{}236,13\N{NO-BREAK SPACE}\N{EURO SIGN}'.format(sep)
 
 
 def test_format_percent():
     sep = i18n.get_group_symbol()
-    assert i18n.format_percent(24.1234) == u'2{}412\N{NO-BREAK SPACE}%'.format(sep)
+    assert i18n.format_percent(24.1234) == '2{}412\N{NO-BREAK SPACE}%'.format(sep)
 
 
 def test_format_scientific():
@@ -73,9 +71,9 @@ def test_format_scientific():
 
 def test_parse_number():
     sep = i18n.get_group_symbol()
-    assert i18n.parse_number(u'1{}099'.format(sep)) == 1099
+    assert i18n.parse_number('1{}099'.format(sep)) == 1099
 
 
 def test_parse_decimal():
     sep = i18n.get_group_symbol()
-    assert i18n.parse_decimal(u'1{}099,1234'.format(sep)) == decimal.Decimal('1099.1234')
+    assert i18n.parse_decimal('1{}099,1234'.format(sep)) == decimal.Decimal('1099.1234')

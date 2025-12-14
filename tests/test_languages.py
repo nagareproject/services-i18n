@@ -1,7 +1,5 @@
-# Encoding: utf-8
-
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -9,9 +7,7 @@
 # this distribution.
 # --
 
-from nagare import local
-
-from nagare import i18n
+from nagare import i18n, local
 from nagare.i18n import Locale, set_locale
 
 

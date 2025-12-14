@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -22,7 +22,7 @@ def on_change(event, path, o, method, services):
 
 class I18NService(plugin.Plugin):
     LOAD_PRIORITY = 70
-    CONFIG_SPEC = dict(plugin.Plugin.CONFIG_SPEC, watch='boolean(default=True)')
+    CONFIG_SPEC = plugin.Plugin.CONFIG_SPEC | {'watch': 'boolean(default=True)'}
 
     @classmethod
     def create_config_spec(cls, command_name, command):
@@ -30,9 +30,9 @@ class I18NService(plugin.Plugin):
 
         if command_name == 'extract':
             config_spec['_root'] = 'string(default="$root")'
-            config_spec[
-                'relative_location'
-            ] = 'boolean(default=False, help="if \\"add_location\\" is \\"full\\" or \\"file\\" generates file names relatives from the project root")'  # noqa: E501
+            config_spec['relative_location'] = (
+                'boolean(default=False, help="if \\"add_location\\" is \\"full\\" or \\"file\\" generates file names relatives from the project root")'  # noqa: E501
+            )
 
         for name, _, description in command.user_options:
             name = name.strip('=')

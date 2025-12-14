@@ -1,7 +1,5 @@
-# Encoding: utf-8
-
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -14,9 +12,8 @@ from decimal import Decimal
 
 import pytest
 from babel.numbers import NumberFormatError
-from nagare import local
 
-from nagare import i18n
+from nagare import i18n, local
 from nagare.i18n import Locale, set_locale
 
 
@@ -50,16 +47,16 @@ def test_format_currency():
     assert i18n.format_currency(1099.98, 'USD') == '$1,099.98'
 
     set_locale(Locale('es', 'CO'))
-    assert i18n.format_currency(1099.98, 'USD') == u'US$1.099,98'
+    assert i18n.format_currency(1099.98, 'USD') == 'US$1.099,98'
 
     set_locale(Locale('de', 'DE'))
-    assert i18n.format_currency(1099.98, 'EUR') == u'1.099,98\xa0\u20ac'
+    assert i18n.format_currency(1099.98, 'EUR') == '1.099,98\xa0\u20ac'
 
     set_locale(Locale('en', 'US'))
-    assert i18n.format_currency(1099.98, 'EUR', u'\xa4\xa4 #,##0.00') == 'EUR 1,099.98'
+    assert i18n.format_currency(1099.98, 'EUR', '\xa4\xa4 #,##0.00') == 'EUR 1,099.98'
 
     set_locale(Locale('en', 'US'))
-    assert i18n.format_currency(1099.98, 'JPY', currency_digits=False) == u'\xa51,099.98'
+    assert i18n.format_currency(1099.98, 'JPY', currency_digits=False) == '\xa51,099.98'
 
     set_locale(Locale('es', 'ES'))
     assert i18n.format_currency(1099.98, 'COP', '#,##0.00', currency_digits=False) == '1.099,98'
@@ -85,10 +82,10 @@ def test_format_percent():
     assert i18n.format_percent(25.1234) == '2,512%'
 
     set_locale(Locale('sv', 'SE'))
-    assert i18n.format_percent(25.1234) == u'2\xa0512\xa0%'
+    assert i18n.format_percent(25.1234) == '2\xa0512\xa0%'
 
     set_locale(Locale('en', 'US'))
-    assert i18n.format_percent(25.1234, u'#,##0\u2030') == u'25,123\u2030'
+    assert i18n.format_percent(25.1234, '#,##0\u2030') == '25,123\u2030'
 
     set_locale(Locale('en', 'US'))
     assert i18n.format_percent(23.9876) == '2,399%'
@@ -98,7 +95,7 @@ def test_format_percent():
 def test_format_scientific():
     set_locale(Locale('en', 'US'))
     assert i18n.format_scientific(10000) == '1E4'
-    assert i18n.format_scientific(1234567, u'##0E00') == '1.234567E06'
+    assert i18n.format_scientific(1234567, '##0E00') == '1.234567E06'
 
 
 def test_parse_number():

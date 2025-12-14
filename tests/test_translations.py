@@ -1,7 +1,5 @@
-# Encoding: utf-8
-
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -11,7 +9,7 @@
 
 import os
 
-from nagare import local, i18n
+from nagare import i18n, local
 
 
 def setup_module(module):
@@ -40,26 +38,26 @@ def test_gettext_unknown():
 
 def test_ugettext():
     s = i18n.ugettext('hello')
-    assert isinstance(s, type(u''))
-    assert s == u'bonjour'
+    assert isinstance(s, str)
+    assert s == 'bonjour'
 
 
 def test_ugettext_params():
     s = i18n.ugettext('Holidays', year=2010)
-    assert isinstance(s, type(u''))
-    assert s == u'Vacances 2010'
+    assert isinstance(s, str)
+    assert s == 'Vacances 2010'
 
 
 def test_ugettext_unknown():
     s = i18n.ugettext('unknown')
-    assert isinstance(s, type(u''))
-    assert s == u'unknown'
+    assert isinstance(s, str)
+    assert s == 'unknown'
 
 
 def test__():
     s = i18n._('hello')
-    assert isinstance(s, type(u''))
-    assert s == u'bonjour'
+    assert isinstance(s, str)
+    assert s == 'bonjour'
 
 
 def test_ngettext_singular():
@@ -88,38 +86,38 @@ def test_ngettext_plural_unknown():
 
 def test_ungettext_singular():
     s = i18n.ungettext('horse', 'horses', 1)
-    assert isinstance(s, type(u''))
-    assert s == u'cheval'
+    assert isinstance(s, str)
+    assert s == 'cheval'
 
 
 def test_ungettext_plural():
     s = i18n.ungettext('horse', 'horses', 3)
-    assert isinstance(s, type(u''))
-    assert s == u'chevaux'
+    assert isinstance(s, str)
+    assert s == 'chevaux'
 
 
 def test_ungettext_singular_unknown():
     s = i18n.ungettext('unknown1', 'unknown2', 1)
-    assert isinstance(s, type(u''))
-    assert s == u'unknown1'
+    assert isinstance(s, str)
+    assert s == 'unknown1'
 
 
 def test_ungettext_plural_unknown():
     s = i18n.ungettext('unknown1', 'unknown2', 3)
-    assert isinstance(s, type(u''))
-    assert s == u'unknown2'
+    assert isinstance(s, str)
+    assert s == 'unknown2'
 
 
 def test_N_singular():
     s = i18n._N('horse', 'horses', 1)
-    assert isinstance(s, type(u''))
-    assert s == u'cheval'
+    assert isinstance(s, str)
+    assert s == 'cheval'
 
 
 def test_N_plural():
     s = i18n._N('horse', 'horses', 3)
-    assert isinstance(s, type(u''))
-    assert s == u'chevaux'
+    assert isinstance(s, str)
+    assert s == 'chevaux'
 
 
 def test_lazy_gettext():
@@ -139,22 +137,22 @@ def test_lazy_gettext_params():
 def test_lazy_ugettext():
     s = i18n.lazy_ugettext('hello')
     assert s.__class__.__name__ == 'LazyProxy'
-    assert isinstance(s.value, type(u''))
-    assert s == u'bonjour'
+    assert isinstance(s.value, str)
+    assert s == 'bonjour'
 
 
 def test_lazy_ugettext_params():
     s = i18n.lazy_ugettext('Holidays', year=2010)
     assert s.__class__.__name__ == 'LazyProxy'
-    assert isinstance(s.value, type(u''))
-    assert s == u'Vacances 2010'
+    assert isinstance(s.value, str)
+    assert s == 'Vacances 2010'
 
 
 def test_L_ugettext():
     s = i18n._L('hello')
     assert s.__class__.__name__ == 'LazyProxy'
-    assert isinstance(s.value, type(u''))
-    assert s == u'bonjour'
+    assert isinstance(s.value, str)
+    assert s == 'bonjour'
 
 
 def test_lazy_ngettext_singular():
@@ -174,26 +172,26 @@ def test_lazy_ngettext_plural():
 def test_lazy_ungettext_singular():
     s = i18n.lazy_ungettext('horse', 'horses', 1)
     assert s.__class__.__name__ == 'LazyProxy'
-    assert isinstance(s.value, type(u''))
+    assert isinstance(s.value, str)
     assert s == 'cheval'
 
 
 def test_lazy_ungettext_plural():
     s = i18n.lazy_ungettext('horse', 'horses', 3)
     assert s.__class__.__name__ == 'LazyProxy'
-    assert isinstance(s.value, type(u''))
+    assert isinstance(s.value, str)
     assert s == 'chevaux'
 
 
 def test_LN_ungettext_singular():
     s = i18n._LN('horse', 'horses', 1)
     assert s.__class__.__name__ == 'LazyProxy'
-    assert isinstance(s.value, type(u''))
+    assert isinstance(s.value, str)
     assert s == 'cheval'
 
 
 def test_LN_ungettext_plural():
     s = i18n._LN('horse', 'horses', 3)
     assert s.__class__.__name__ == 'LazyProxy'
-    assert isinstance(s.value, type(u''))
+    assert isinstance(s.value, str)
     assert s == 'chevaux'

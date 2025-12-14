@@ -1,5 +1,5 @@
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -88,12 +88,12 @@ class Command(command.Command):
 class Extract(Command):
     @classmethod
     def create_command(cls, **defaults):
-        return super(Extract, cls).create_command(
+        return super().create_command(
             project='$app_name', version='$app_version', input_dirs='$root', output_file='$data/locale/messages.pot'
         )
 
     def create_logger(self, command, i18n_service, _output_file, **config):
-        logger = super(Extract, self).create_logger(command, i18n_service, **config)
+        logger = super().create_logger(command, i18n_service, **config)
         logger.info = lambda msg, *args: self.log_info(
             msg, *((_output_file,) if msg == 'writing PO template file to %s' else args)
         )
@@ -114,7 +114,7 @@ class Extract(Command):
 
         with NamedTemporaryFile('rb') as temp:
             r = services_service(
-                super(Extract, self).run_command,
+                super().run_command,
                 command,
                 input_dirs=input_dirs,
                 output_file=temp.name,
@@ -139,30 +139,28 @@ class Extract(Command):
 class Init(Command):
     def set_arguments(self, parser):
         parser.add_argument('locale').completer = lambda **kw: localedata.locale_identifiers()
-        super(Init, self).set_arguments(parser)
+        super().set_arguments(parser)
 
     @classmethod
     def create_command(cls, **defaults):
-        return super(Init, cls).create_command(input_file='${/i18n/extract/output_file}', output_dir='')
+        return super().create_command(input_file='${/i18n/extract/output_file}', output_dir='')
 
     def run_command(self, command, input_file, output_dir, services_service, **config):
         output_dir = output_dir or os.path.dirname(input_file)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        return services_service(
-            super(Init, self).run_command, command, input_file=input_file, output_dir=output_dir, **config
-        )
+        return services_service(super().run_command, command, input_file=input_file, output_dir=output_dir, **config)
 
 
 class Update(Command):
     def set_arguments(self, parser):
         parser.add_argument('-l', '--locale').completer = lambda **kw: localedata.locale_identifiers()
-        super(Update, self).set_arguments(parser)
+        super().set_arguments(parser)
 
     @classmethod
     def create_command(cls, **defaults):
-        return super(Update, cls).create_command(
+        return super().create_command(
             input_file='${/i18n/extract/output_file}', domain='${/i18n/init/domain}', output_dir=''
         )
 
@@ -171,19 +169,17 @@ class Update(Command):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        return services_service(
-            super(Update, self).run_command, command, input_file=input_file, output_dir=output_dir, **config
-        )
+        return services_service(super().run_command, command, input_file=input_file, output_dir=output_dir, **config)
 
 
 class Compile(Command):
     def set_arguments(self, parser):
         parser.add_argument('-l', '--locale').completer = lambda **kw: localedata.locale_identifiers()
-        super(Compile, self).set_arguments(parser)
+        super().set_arguments(parser)
 
     @classmethod
     def create_command(cls, **defaults):
-        return super(Compile, cls).create_command(
+        return super().create_command(
             input_file='${/i18n/extract/output_file}',
             directory='${/i18n/init/output_dir}',
             domain='${/i18n/init/domain}',
@@ -194,4 +190,4 @@ class Compile(Command):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        return services_service(super(Compile, self).run_command, command, directory=directory, **config)
+        return services_service(super().run_command, command, directory=directory, **config)

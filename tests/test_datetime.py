@@ -1,7 +1,5 @@
-# Encoding: utf-8
-
 # --
-# Copyright (c) 2008-2024 Net-ng.
+# Copyright (c) 2014-2025 Net-ng.
 # All rights reserved.
 #
 # This software is licensed under the BSD License, as described in
@@ -13,9 +11,8 @@ import datetime
 
 import pytz
 import pytest
-from nagare import local
 
-from nagare import i18n
+from nagare import i18n, local
 from nagare.i18n import Locale, set_locale
 
 
@@ -30,7 +27,7 @@ def test_format_datetime():
 
     set_locale(Locale('fr', 'FR', timezone=pytz.timezone('Europe/Paris'), default_timezone=pytz.UTC))
     dt = datetime.datetime(2007, 4, 1, 15, 30)
-    assert i18n.format_datetime(dt, 'full') == u'dimanche 1 avril 2007, 17:30:00 heure d’été d’Europe centrale'
+    assert i18n.format_datetime(dt, 'full') == 'dimanche 1 avril 2007, 17:30:00 heure d’été d’Europe centrale'
 
     set_locale(Locale('en', timezone=pytz.timezone('US/Eastern'), default_timezone=pytz.UTC))
     assert i18n.format_datetime(dt, "yyyy.MM.dd G 'at' HH:mm:ss zzz") == '2007.04.01 AD at 11:30:00 EDT'
@@ -67,7 +64,7 @@ def test_format_timedelta():
     assert i18n.format_timedelta(datetime.timedelta(weeks=12)) == '3 months'
 
     set_locale(Locale('es'))
-    assert i18n.format_timedelta(1) == u'1 segundo'
+    assert i18n.format_timedelta(1) == '1 segundo'
 
     set_locale(Locale('en', 'US'))
     assert i18n.format_timedelta(datetime.timedelta(hours=3), granularity='day') == '1 day'
@@ -104,11 +101,11 @@ def test_format_interval():
     set_locale(Locale('fi'))
     assert (
         i18n.format_interval(datetime.datetime(2016, 1, 15), datetime.datetime(2016, 1, 17), 'yMd')
-        == u'15.\u201317.1.2016'
+        == '15.\u201317.1.2016'
     )
 
     set_locale(Locale('en', 'GB'))
-    assert i18n.format_interval(datetime.time(12, 12), datetime.time(16, 16), 'Hm') == u'12:12\u201316:16'
+    assert i18n.format_interval(datetime.time(12, 12), datetime.time(16, 16), 'Hm') == '12:12\u201316:16'
 
     set_locale(Locale('en', 'US'))
     assert (
@@ -117,17 +114,17 @@ def test_format_interval():
     )
 
     set_locale(Locale('it'))
-    assert i18n.format_interval(datetime.time(16, 18), datetime.time(16, 24), 'Hm') == u'16:18\u201316:24'
+    assert i18n.format_interval(datetime.time(16, 18), datetime.time(16, 24), 'Hm') == '16:18\u201316:24'
     assert i18n.format_interval(datetime.time(16, 18), datetime.time(16, 18), 'Hm') == '16:18'
 
     set_locale(Locale('ja'))
     assert (
         i18n.format_interval(datetime.date(2015, 1, 1), datetime.date(2017, 1, 1), 'wzq')
-        == u'2015/01/01\uff5e2017/01/01'
+        == '2015/01/01\uff5e2017/01/01'
     )
 
     set_locale(Locale('ja'))
-    assert i18n.format_interval(datetime.time(16, 18), datetime.time(16, 24), 'xxx') == u'16:18:00\uff5e16:24:00'
+    assert i18n.format_interval(datetime.time(16, 18), datetime.time(16, 24), 'xxx') == '16:18:00\uff5e16:24:00'
 
     set_locale(Locale('de'))
     assert (
@@ -158,7 +155,7 @@ def test_get_timezone_gmt():
 def test_get_timezone_location():
     set_locale(Locale('de', 'DE'))
     tz = pytz.timezone('America/St_Johns')
-    assert i18n.get_timezone_location(tz) == u'Kanada (St. John’s)'
+    assert i18n.get_timezone_location(tz) == 'Kanada (St. John’s)'
 
     set_locale(Locale('de', 'DE'))
     tz = pytz.timezone('America/Mexico_City')
@@ -178,14 +175,14 @@ def test_get_timezone_name():
 
     set_locale(Locale('de', 'DE'))
     tz = pytz.timezone('Europe/Berlin')
-    assert i18n.get_timezone_name(tz) == u'Mitteleurop\xe4ische Zeit'
+    assert i18n.get_timezone_name(tz) == 'Mitteleurop\xe4ische Zeit'
 
     set_locale(Locale('pt', 'BR'))
-    assert i18n.get_timezone_name(tz) == u'Hor\xe1rio da Europa Central'
+    assert i18n.get_timezone_name(tz) == 'Hor\xe1rio da Europa Central'
 
     set_locale(Locale('de', 'DE'))
     tz = pytz.timezone('America/St_Johns')
-    assert i18n.get_timezone_name(tz) == u'Neufundland-Zeit'
+    assert i18n.get_timezone_name(tz) == 'Neufundland-Zeit'
 
 
 def test_get_period_names():
